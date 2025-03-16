@@ -1,13 +1,15 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using System;
 using System.Windows;
 
-namespace View;
-
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
+namespace MyApp
 {
+    public partial class App : Application
+    {
+        [STAThread]
+        public static void Main()
+        {
+            var app = new App();
+            app.Run(new MainWindow()); // Run the MainWindow as the entry point of the application
+        }
+    }
 }
-

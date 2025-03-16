@@ -1,59 +1,69 @@
-﻿using System.Windows;
-using Logic;
+﻿using Logic;
+using System;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Threading;
 
-namespace BallAndBoardWpfApp
+namespace MyApp
 {
     public partial class MainWindow : Window
     {
-        private Board board;
-        private DispatcherTimer timer;
+        private Board _board;
+        private DispatcherTimer _timer;
 
         public MainWindow()
         {
             InitializeComponent();
-            board = new Board(100, 100);
+            _board = new Board(500, 500); // Create a board with dimensions 500x500
+            InitializeBalls();
+            InitializeTimer();
+        }
 
-            Ball ball1 = new Ball(10, 20, 2, 1, 1);
-            Ball ball2 = new Ball(30, 40, 3, 1, 1);
-            Ball ball3 = new Ball(50, 60, 1, 1, 1);
+        private void InitializeBalls()
+        {
+            // Initialize balls with different positions and velocities
+            Ball ball1 = new Ball(10, 20, 20, 2, 2);
+            Ball ball2 = new Ball(100, 100, 30, -3, -1);
+            Ball ball3 = new Ball(200, 200, 25, 1, -2);
+            _board.AddBall(ball1);
+            _board.AddBall(ball2);
+            _board.AddBall(ball3);
+        }
 
-            board.AddBall(ball1);
-            board.AddBall(ball2);
-            board.AddBall(ball3);
-
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(16); 
-            timer.Tick += Timer_Tick;
-            timer.Start();
+        private void InitializeTimer()
+        {
+            // Create a timer that ticks every 16 milliseconds (approx 60 FPS)
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromMilliseconds(16);
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            board.moveTheBalls(0.1); 
+            // Move the balls
+            _board.MoveTheBalls(1); // Move balls by 1 unit per tick
 
-            gameCanvas.Children.Clear();
+            // Clear the previous ball drawings
+            canvas.Children.Clear();
 
-            foreach (var ball in board.Balls)
+            // Redraw balls at their new positions
+            foreach (var ball in _board.Balls)
             {
-                DrawBall(ball);
+                Ellipse ellipse = new Ellipse
+                {
+                    Width = ball.Radius * 2,
+                    Height = ball.Radius * 2,
+                    Fill = Brushes.Red // Color of the ball
+                };
+
+                // Position the ball on the canvas
+                Canvas.SetLeft(ellipse, ball.X - ball.Radius);
+                Canvas.SetTop(ellipse, ball.Y - ball.Radius);
+                canvas.Children.Add(ellipse); // Add the ball to the canvas
             }
-        }
-
-        private void DrawBall(Ball ball)
-        {
-            Ellipse ballShape = new Ellipse
-            {
-                Width = ball.Radius * 2,
-                Height = ball.Radius * 2,
-                Fill = Brushes.Blue
-            };
-
-            Canvas.SetLeft(ballShape, ball.X - ball.Radius);  
-            Canvas.SetTop(ballShape, ball.Y - ball.Radius);   
-
-            gameCanvas.Children.Add(ballShape);
         }
     }
 }

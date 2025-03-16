@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace LogicTest
 {
     public class UnitTest1
