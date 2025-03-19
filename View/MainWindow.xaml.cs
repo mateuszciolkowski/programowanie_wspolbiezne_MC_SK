@@ -16,7 +16,7 @@ namespace MyApp
         public MainWindow()
         {
             InitializeComponent();
-            _board = new Board(500, 500); // Create a board with dimensions 500x500
+            _board = new Board(550, 550); 
             InitializeBalls();
             InitializeTimer();
         }
@@ -24,7 +24,7 @@ namespace MyApp
         private void InitializeBalls()
         {
             // Initialize balls with different positions and velocities
-            _board.AddBall(10, 20, 20, 2, 2);
+            _board.AddBall(50, 20, 20, 50, 30);
             _board.AddBall(100, 100, 30, -3, -1);
             _board.AddBall(200, 200, 25, 1, -2);
         }
