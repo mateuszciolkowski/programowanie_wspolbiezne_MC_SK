@@ -24,12 +24,9 @@ namespace MyApp
         private void InitializeBalls()
         {
             // Initialize balls with different positions and velocities
-            Ball ball1 = new Ball(10, 20, 20, 2, 2);
-            Ball ball2 = new Ball(100, 100, 30, -3, -1);
-            Ball ball3 = new Ball(200, 200, 25, 1, -2);
-            _board.AddBall(ball1);
-            _board.AddBall(ball2);
-            _board.AddBall(ball3);
+            _board.AddBall(10, 20, 20, 2, 2);
+            _board.AddBall(100, 100, 30, -3, -1);
+            _board.AddBall(200, 200, 25, 1, -2);
         }
 
         private void InitializeTimer()

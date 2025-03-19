@@ -4,6 +4,6 @@
         Title="Ball Simulation" Height="600" Width="600">
     <Grid>
         <!-- Canvas to render the board and balls -->
-        <Canvas x:Name="canvas" Background="White" Width="500" Height="500"/>
+        <Canvas x:Name="canvas" Background="DimGray" Width="550" Height="550"/>
     </Grid>
 </Window>
