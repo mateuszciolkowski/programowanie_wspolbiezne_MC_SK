@@ -24,7 +24,7 @@ namespace MyApp
         private void InitializeBalls()
         {
             // Initialize balls with different positions and velocities
-            _board.AddBall(50, 20, 20, 50, 30);
+            _board.AddBall(50, 20, 20, 50, 2);
             _board.AddBall(100, 100, 30, -3, -1);
             _board.AddBall(200, 200, 25, 1, -2);
         }
