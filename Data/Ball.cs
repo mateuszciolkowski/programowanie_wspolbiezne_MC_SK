@@ -1,6 +1,6 @@
 ﻿namespace Data
 {
-    public class Ball
+    public class Ball : IBall
     {
         public Ball(double x, double y, double radius, double velocityX, double velocityY)
         {

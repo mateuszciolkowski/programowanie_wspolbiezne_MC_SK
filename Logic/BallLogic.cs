@@ -2,14 +2,11 @@
 
 namespace Logic
 {
-    public class BallLogic
+    public class BallLogic : IBallLogic
     {
-        public Ball CreateBall(double x, double y, double radius, double velocityX, double velocityY)
-        {
-            return new Ball(x, y, radius, velocityX, velocityY);
-        }
+        public IBall CreateBall(double x, double y, double radius, double velocityX, double velocityY) => new Ball(x, y, radius, velocityX, velocityY);
 
-        public void Move(Ball ball, double timeToMove)
+        public void Move(IBall ball, double timeToMove)
         {
 
 
@@ -17,7 +14,7 @@ namespace Logic
             ball.Y += ball.VelocityY * timeToMove;
         }
 
-        public void Bounce(Ball ball, double width, double height)
+        public void Bounce(IBall ball, double width, double height)
         {
             if (ball.X - ball.Radius <= 0 || ball.X + ball.Radius >= width) ball.VelocityX = -ball.VelocityX;
             if (ball.Y - ball.Radius <= 0 || ball.Y + ball.Radius >= height) ball.VelocityY = -ball.VelocityY;

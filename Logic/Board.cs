@@ -2,35 +2,42 @@
 using System;
 using System.Collections.Generic;
 
+// Board i interfejs boardu korzysta z interfejsu IBallLogic, bo IballLogic odpowiedzialne jest za 1 kule, a
+// board i IBoard odpowiedzialne jest za grupe piłek, dlatego 2 api w tej warstwie
+
 namespace Logic
 {
-    public class Board
+    public class Board : IBoard
     {
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public List<Ball> Balls { get; set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
 
-        private BallLogic _balllogic;
+        private List<IBall> _balls = new List<IBall>();
+        private IBallLogic _balllogic = new BallLogic();
+
+
+        public IReadOnlyList<IBall> Balls => _balls.AsReadOnly();
 
         public Board(double width, double height)
         {
             Width = width;
             Height = height;
-            Balls = new List<Ball>();
+            _balls = [];
             _balllogic = new BallLogic();
         }
 
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
-            Balls.Add(new Ball(x, y, radius, velocityX, velocityY));
+            IBall newBall = _balllogic.CreateBall(x, y, radius, velocityX, velocityY);
+            _balls.Add(newBall);
         }
 
-        public void MoveTheBalls(double timeToMove)
+        void IBoard.MoveTheBalls(double timeToMove)
         {
-            foreach (var ball in Balls)
+            foreach (var IBall in _balls)
             {
-                _balllogic.Move(ball, timeToMove);
-                _balllogic.Bounce(ball, Width, Height);
+                _balllogic.Move(IBall, timeToMove);
+                _balllogic.Bounce(IBall, Width, Height);
             }
         }
     }
