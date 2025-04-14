@@ -1,6 +1,6 @@
 ﻿using Data;
 
-namespace Logic
+namespace Logic.BallLogicNamespace
 {
     public interface IBallLogic
     {

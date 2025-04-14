@@ -7,13 +7,14 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace MyApp
+namespace View
 {
-    public partial class MainWindow : Window 
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        DataContext = new MainViewModel();
-    
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
     }
     //public partial class MainWindow : Window
     //{

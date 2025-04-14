@@ -1,5 +1,6 @@
 using Data;
-using Logic;
+using Logic.Ball;
+using Logic.Board;
 namespace LogicTest
 {
     public class BoardTest
@@ -8,7 +9,7 @@ namespace LogicTest
         public void AddBallTest()
         {
             BallLogic ballLogic = new BallLogic();
-            Board board = new Board(200, 200);
+            BoardLogic board = new BoardLogic(200, 200);
             Assert.Empty(board.Balls);
             board.AddBall(10, 10, 10, 10, 10);
             Assert.NotEmpty(board.Balls);
@@ -17,7 +18,7 @@ namespace LogicTest
         public void MoveTheBallsTest()
         {
             BallLogic ballLogic = new BallLogic();
-            Board board = new Board(200, 200);
+            BoardLogic board = new BoardLogic(200, 200);
             board.AddBall(10, 10, 10, 10, 10);
             Ball ball = board.Balls[0];
             double x_prev = ball.X;

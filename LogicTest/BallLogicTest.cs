@@ -1,5 +1,5 @@
 ﻿using Data;
-using Logic;
+using Logic.Ball;
 namespace LogicTest
 {
     public class BallLogicTest
