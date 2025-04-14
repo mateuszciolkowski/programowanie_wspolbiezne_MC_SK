@@ -1,39 +1,18 @@
-﻿using Logic.BoardLogicNamespace;
+﻿using System.Collections.Generic;
 
-namespace Presentation.Model
+namespace Model
 {
     public class BoardModel
     {
-        private static readonly Random _random = new Random();
-        private readonly IBoardLogic _boardLogic;
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public List<BallModel> Balls { get; set; }
 
-        public event Action? Updated;
-
-        public BoardModel(double width, double height, int amountOfBalls)
+        public BoardModel(double width, double height)
         {
-            _boardLogic = new BoardLogic(width, height);
-            for (int i = 0; i < amountOfBalls; i++)
-            {
-                double xRandom = _random.NextDouble() * width;
-                double yRandom = _random.NextDouble() * height;
-                double radiusRandom = _random.Next(20,30);
-                double vxRandom = _random.Next(-3, 3);
-                double vyRandom = _random.Next(-3, 3);
-                   _boardLogic.AddBall(xRandom, yRandom, radiusRandom, vxRandom, vyRandom);
-            }
+            Width = width;
+            Height = height;
+            Balls = new List<BallModel>();
         }
-
-
-        public void AddBall(double x, double y, double radius, double vx, double vy)
-        {
-            _boardLogic.AddBall(x, y, radius, vx, vy);
-            Updated?.Invoke();
-        }
-        public void RemoveBall()
-        {
-            _boardLogic.RemoveBall();
-            Updated?.Invoke();
-        }
-
     }
 }

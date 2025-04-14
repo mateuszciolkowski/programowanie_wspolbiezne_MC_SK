@@ -1,15 +1,16 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
+using ViewModel;
 
-namespace MyApp
+namespace View
 {
     public partial class App : Application
     {
-        [STAThread]
-        public static void Main()
+        public App()
         {
-            var app = new App();
-            app.Run(new MainWindow()); // Run the MainWindow as the entry point of the application
+            var window = new MainWindow(); // Twoje okno
+            var viewModel = new BoardViewModel(800, 600); // Rozmiar planszy
+            window.DataContext = viewModel; // Ustawiamy ViewModel jako DataContext
+            window.Show();
         }
     }
 }

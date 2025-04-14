@@ -1,9 +1,9 @@
 ﻿using Data;
-using Logic.BallLogicNamespace;
+using Logic;
 using System;
 using System.Collections.Generic;
 
-namespace Logic.BoardLogicNamespace
+namespace Logic
 {
     public class BoardLogic : IBoardLogic
     {

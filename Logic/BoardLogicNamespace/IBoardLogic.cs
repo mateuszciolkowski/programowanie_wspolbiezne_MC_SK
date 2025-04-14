@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data;
 
-namespace Logic.BoardLogicNamespace
+namespace Logic
 {
     public interface IBoardLogic
     {

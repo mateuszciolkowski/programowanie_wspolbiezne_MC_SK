@@ -1,52 +1,62 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Presentation.Model;
-using Data;
+using Logic;
+using Model;
 
-namespace Presentation.ViewModel
+namespace ViewModel
 {
-    public class BallViewModel
+    public class BoardViewModel
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Radius { get; set; }
-    }
+        private readonly IBoardLogic _boardLogic;
 
-    public class BoardViewModel : INotifyPropertyChanged
-    {
-        private readonly BoardModel _model;
-        public ObservableCollection<BallViewModel> Balls { get; } = new();
+        public ObservableCollection<BallModel> Balls { get; }
+        public double BoardWidth { get; set; }
+        public double BoardHeight { get; set; }
+        public int AmountOfBalls { get; set; }
 
-        public ICommand StartCommand { get; }
-        public ICommand StopCommand { get; }
-        public ICommand AddBallCommand { get; }
+        public ICommand ApplyCommand { get; }
 
         public BoardViewModel()
         {
-            _model = new BoardModel(800, 600);
-            _model.Updated += RefreshBalls;
+            // Inicjalizujemy logikę planszy
+            _boardLogic = new BoardLogic(BoardWidth, BoardHeight);
+            Balls = new ObservableCollection<BallModel>();
+            ApplyCommand = new RelayCommand(ApplyChanges);
 
-            StartCommand = new RelayCommand(_ => _model.Start());
-            StopCommand = new RelayCommand(_ => _model.Stop());
-            AddBallCommand = new RelayCommand(_ => _model.AddBall(100, 100, 20, 100, 150));
+            // Możesz tutaj dodać inicjalne piłki
+            AddBalls();
         }
 
-        private void RefreshBalls()
+        private void AddBalls()
         {
-            App.Current.Dispatcher.Invoke(() =>
+            // Przykład dodania 5 piłek losowo
+            for (int i = 0; i < 5; i++)
             {
-                Balls.Clear();
-                foreach (var b in _model.GetBalls())
-                {
-                    Balls.Add(new BallViewModel { X = b.X, Y = b.Y, Radius = b.Radius });
-                }
-            });
+                double x = new Random().NextDouble() * BoardWidth;
+                double y = new Random().NextDouble() * BoardHeight;
+                double radius = new Random().Next(20, 30);
+                double vx = new Random().Next(-3, 3);
+                double vy = new Random().Next(-3, 3);
+                _boardLogic.AddBall(x, y, radius, vx, vy);
+            }
+            UpdateBalls();
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string name = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        private void ApplyChanges()
+        {
+            // Logika aplikowania zmian
+            _boardLogic.ResizeBoard(BoardWidth, BoardHeight);
+            UpdateBalls();
+        }
+
+        private void UpdateBalls()
+        {
+            Balls.Clear();
+            foreach (var ball in _boardLogic.Balls)
+            {
+                Balls.Add(new BallModel(ball.X, ball.Y, ball.Radius));
+            }
+        }
     }
 }
