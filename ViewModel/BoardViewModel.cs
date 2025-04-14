@@ -14,7 +14,7 @@ namespace ViewModel
         public ObservableCollection<BallViewModel> Balls { get; set; }
         private System.Timers.Timer _timer;
         private readonly IBoardModel _boardModel;
-
+        private readonly IDispatcher _dispatcher;
         private readonly Action _runOnUiThread;
 
         private int _amountOfBalls;
@@ -66,19 +66,20 @@ namespace ViewModel
 
             var modelBalls = _boardModel.Balls;
 
-            // Synchronizowanie liczby kul w kolekcji
-            while (Balls.Count < modelBalls.Count)
-                Balls.Add(new BallViewModel(modelBalls[Balls.Count].X, modelBalls[Balls.Count].Y, modelBalls[Balls.Count].Radius));
+           
+                while (Balls.Count < modelBalls.Count)
+                    Balls.Add(new BallViewModel(modelBalls[Balls.Count].X, modelBalls[Balls.Count].Y, modelBalls[Balls.Count].Radius));
 
-            while (Balls.Count > modelBalls.Count)
-                Balls.RemoveAt(Balls.Count - 1);
+                while (Balls.Count > modelBalls.Count)
+                    Balls.RemoveAt(Balls.Count - 1);
 
-            // Aktualizowanie pozycji kul w istniejących obiektach
-            for (int i = 0; i < modelBalls.Count; i++)
-            {
-                Balls[i].UpdateFromBallModel(modelBalls[i]);
-            }
+                for (int i = 0; i < modelBalls.Count; i++)
+                {
+                    Balls[i].UpdateFromBallModel(modelBalls[i]);
+                }
         }
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
