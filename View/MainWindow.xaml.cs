@@ -8,7 +8,7 @@ namespace View
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new BoardViewModel();
+            DataContext = new BoardViewModel(1000,1000);
         }
     }
 }

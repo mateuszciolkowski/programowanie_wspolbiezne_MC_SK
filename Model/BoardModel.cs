@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using Logic;
 namespace Model
 {
@@ -6,30 +6,33 @@ namespace Model
     {
         public double Width { get; set; }
         public double Height { get; set; }
-        public List<BallModel> Balls { get; set; }
+        //public List<BallModel> Balls { get; set; }
         public readonly IBoardLogic boardLogic;
+        public ObservableCollection<BallModel> Balls { get; set; }
 
-        public BoardModel(double width, double height)
+         public BoardModel(double width, double height)
         {
             Width = width;
             Height = height;
-            Balls = new List<BallModel>();
+            //Balls = new List<BallModel>();
+            Balls = new ObservableCollection<BallModel>();
             boardLogic = new BoardLogic(width, height);
-            
         }
 
-        void IBoardModel.ResizeBoard(double width, double height)
+        public void ResizeBoard(double width, double height)
         {
             boardLogic.ResizeBoard(width, height);
+            Width = width;
+            Height = height;
         }
 
-        void IBoardModel.AddBall(double x, double y, double radius, double velocityX, double velocityY)
+        public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
             boardLogic.AddBall(x, y, radius, velocityX, velocityY);
-            Balls.Append(new BallModel(x, y, radius, velocityX, velocityY));
+            Balls.Add(new BallModel(x, y, radius, velocityX, velocityY));
         }
 
-        void IBoardModel.RemoveBall()
+        public void RemoveBall()
         {
             boardLogic.RemoveBall();
             if (Balls.Count > 0)
@@ -38,7 +41,7 @@ namespace Model
             }
         }
 
-        void IBoardModel.MoveTheBalls(double timeToMove)
+        public void MoveTheBalls(double timeToMove)
         {
             boardLogic.MoveTheBalls(timeToMove);
         }

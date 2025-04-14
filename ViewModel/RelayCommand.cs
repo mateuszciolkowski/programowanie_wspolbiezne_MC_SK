@@ -1,36 +1,26 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ViewModel
+public class RelayCommand : ICommand
 {
-    public class RelayCommand : ICommand
+    private readonly Action _execute;
+    private readonly Func<bool>? _canExecute;
+
+    public RelayCommand(Action execute, Func<bool>? canExecute = null)
     {
-        private readonly Action _execute; // Akcja do wykonania
-        private readonly Func<bool>? _canExecute; // Określa, czy komenda może zostać wykonana
-
-        public RelayCommand(Action execute, Func<bool>? canExecute = null)
-        {
-            _execute = execute; // Zapisujemy akcję
-            _canExecute = canExecute; // Zapisujemy opcjonalną funkcję, która sprawdza, czy komenda może zostać wykonana
-        }
-
-        // Ta metoda sprawdza, czy komenda może być wykonana (np. czy przycisk jest aktywowany)
-        public bool CanExecute(object? parameter)
-        {
-            return _canExecute?.Invoke() ?? true; // Jeśli nie podano funkcji, domyślnie pozwalamy na wykonanie komendy
-        }
-
-        // Ta metoda wykonuje akcję
-        public void Execute(object? parameter)
-        {
-            _execute(); // Wywołuje zapisaną akcję
-        }
-
-        // Wydarzenie, które informuje UI, że stan komendy (np. czy może być wykonana) uległ zmianie
-        public event EventHandler? CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; } // Zarejestrowanie eventu
-            remove { CommandManager.RequerySuggested -= value; } // Wyrejestrowanie eventu
-        }
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute;
     }
+
+    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+
+    public void Execute(object? parameter) => _execute();
+
+    public event EventHandler? CanExecuteChanged;
+
+    // Metoda służąca do podniesienia CanExecuteChanged
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+    // Dodatkowo, jeśli chcesz, aby zmiany były obserwowane,
+    // musisz zapewnić odpowiednie mechanizmy, np. implementację powiadamiania
 }
