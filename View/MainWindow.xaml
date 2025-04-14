@@ -5,22 +5,25 @@
         Title="Ball Board" Height="450" Width="800">
 
     <Grid>
-        <StackPanel>
-            <TextBox Text="{Binding BoardWidth}" Width="100" Margin="10"/>
-            <TextBox Text="{Binding BoardHeight}" Width="100" Margin="10"/>
-            <TextBox Text="{Binding AmountOfBalls}" Width="100" Margin="10" />
-
-            <Button Content="Zastosuj" Command="{Binding ApplyCommand}" Width="100" Margin="10"/>
-
-            <ListBox ItemsSource="{Binding Balls}" Margin="10">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        <!-- Grupa do układu: w lewym górnym rogu -->
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
+            <TextBox Text="{Binding AmountOfBalls}" Width="128" Margin="0 0 0 10"/>
+            <Button Content="Zastosuj" Command="{Binding ApplyCommand}" Width="100"/>
         </StackPanel>
+
+        <!-- Plansza (gdzie będą się poruszać kulki) - centralnie -->
+        <Canvas x:Name="BoardCanvas" Background="LightGray" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ItemsControl ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
     </Grid>
 </Window>

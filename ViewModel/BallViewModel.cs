@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Data;
 
 namespace ViewModel
 {
@@ -6,6 +7,7 @@ namespace ViewModel
     {
         private double _x;
         private double _y;
+        private double _radius;
 
         public double X
         {
@@ -19,7 +21,11 @@ namespace ViewModel
             set { _y = value; OnPropertyChanged(nameof(Y)); }
         }
 
-        public double Radius { get; set; }
+        public double Radius
+        {
+            get => _radius;
+            set { _radius = value; OnPropertyChanged(nameof(Radius)); }
+        }
 
         public BallViewModel(double x, double y, double radius)
         {
@@ -28,7 +34,21 @@ namespace ViewModel
             Radius = radius;
         }
 
+        // Metoda do aktualizacji właściwości kulki
+        public void Update(Ball modelBall)
+        {
+            X = modelBall.X;
+            Y = modelBall.Y;
+            Radius = modelBall.Radius;
+        }
+        public void UpdateFromBallModel(Model.BallModel modelBall)
+        {
+            X = modelBall.X;
+            Y = modelBall.Y;
+            Radius = modelBall.Radius;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

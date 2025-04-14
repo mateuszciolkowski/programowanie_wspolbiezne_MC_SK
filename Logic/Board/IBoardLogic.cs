@@ -12,6 +12,7 @@ namespace Logic
         void ResizeBoard(double width, double height);
         void AddBall(double x, double y, double radius, double velocityX, double velocityY);
         void RemoveBall();
+        public void ClearBalls();
         void MoveTheBalls(double timeToMove);
     }
 }

@@ -15,5 +15,7 @@ namespace Model
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY);
         public void RemoveBall();
         public void MoveTheBalls(double timeToMove);
+        public void ClearBalls();
+
     }
 }

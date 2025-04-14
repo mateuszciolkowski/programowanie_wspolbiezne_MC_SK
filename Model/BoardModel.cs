@@ -32,6 +32,12 @@ namespace Model
             Balls.Add(new BallModel(x, y, radius, velocityX, velocityY));
         }
 
+        public void ClearBalls()
+        {
+            Balls.Clear();
+            boardLogic.ClearBalls();
+        }
+
         public void RemoveBall()
         {
             boardLogic.RemoveBall();

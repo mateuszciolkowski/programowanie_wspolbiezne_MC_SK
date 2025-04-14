@@ -7,9 +7,9 @@ namespace View
     {
         public App()
         {
-            var window = new MainWindow(); // Twoje okno
-            var viewModel = new BoardViewModel(1000,1000); // Rozmiar planszy
-            window.DataContext = viewModel; // Ustawiamy ViewModel jako DataContext
+            var window = new MainWindow(); 
+            var viewModel = new BoardViewModel(450, 800, () => Application.Current.Dispatcher.Invoke(() => { }));
+            window.DataContext = viewModel;
             window.Show();
         }
     }

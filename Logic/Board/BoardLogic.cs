@@ -42,7 +42,11 @@ namespace Logic
             }
         }
 
-        
+        public void ClearBalls()
+        {
+            _balls.Clear();
+        }
+
         public void MoveTheBalls(double timeToMove)
         {
             foreach (var ball in _balls)

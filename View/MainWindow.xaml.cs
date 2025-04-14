@@ -8,7 +8,7 @@ namespace View
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new BoardViewModel(1000,1000);
+            DataContext = new BoardViewModel(450, 800, () => Application.Current.Dispatcher.Invoke(() => { }));
         }
     }
 }

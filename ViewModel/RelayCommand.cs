@@ -1,26 +1,21 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using System;
 
 public class RelayCommand : ICommand
 {
     private readonly Action _execute;
-    private readonly Func<bool>? _canExecute;
 
-    public RelayCommand(Action execute, Func<bool>? canExecute = null)
+    public RelayCommand(Action execute)
     {
-        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-        _canExecute = canExecute;
+        _execute = execute;
     }
 
-    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+    public event EventHandler CanExecuteChanged;
 
-    public void Execute(object? parameter) => _execute();
+    public bool CanExecute(object parameter) => true;
 
-    public event EventHandler? CanExecuteChanged;
-
-    // Metoda służąca do podniesienia CanExecuteChanged
-    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-
-    // Dodatkowo, jeśli chcesz, aby zmiany były obserwowane,
-    // musisz zapewnić odpowiednie mechanizmy, np. implementację powiadamiania
+    public void Execute(object parameter)
+    {
+        _execute();
+    }
 }
