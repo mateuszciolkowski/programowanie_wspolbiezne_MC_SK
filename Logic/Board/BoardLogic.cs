@@ -7,8 +7,8 @@ namespace Logic
 {
     public class BoardLogic : IBoardLogic
     {
-        public double Width { get; private set; }
-        public double Height { get; private set; }
+        public double Width { get;  set; }
+        public double Height { get;  set; }
 
         private List<IBall> _balls;
         private IBallLogic _balllogic;

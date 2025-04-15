@@ -8,14 +8,15 @@ namespace Model
     {
         public double Width { get; set; }
         public double Height { get; set; }
-        BoardLogic boardLogic = new BoardLogic(400,400);
+        BoardLogic boardLogic;
         // Publiczna ObservableCollection
         public ObservableCollection<BallModel> Balls { get; set; }
 
         public BoardModel(double width, double height)
         {
             Width = width;
-            Height = height;
+            Height = width;
+            boardLogic = new BoardLogic(width, height);
             Balls = new ObservableCollection<BallModel>(); 
         }
 
@@ -23,6 +24,7 @@ namespace Model
         {
             Width = width;
             Height = height;
+            boardLogic.ResizeBoard(width, height);
         }
 
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)

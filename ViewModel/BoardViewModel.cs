@@ -9,6 +9,8 @@ using System.Diagnostics;
 using ViewModel;
 using System.Drawing;
 using System.Globalization;
+using System.Windows.Media.Media3D;
+using System.Windows;
 
 public class BoardViewModel : INotifyPropertyChanged
 {
@@ -50,10 +52,21 @@ public class BoardViewModel : INotifyPropertyChanged
 
     public ICommand ResizeCommand => new RelayCommand(OnResize);
 
-    private void OnResize()
+    private void OnResize(object parameter)
     {
-        BoardWidth = 800;  // example value, can be bound to the UI
-        BoardHeight = 600;
+        if (parameter is SizeChangedEventArgs args)
+        {
+            if (args.Source is FrameworkElement element)
+            {
+                _boardWidth = element.ActualWidth;
+                _boardHeight = element.ActualHeight;
+
+                _boardModel.ResizeBoard(_boardWidth, _boardHeight); // <- jeśli chcesz, by model znał nowy rozmiar
+                OnPropertyChanged(nameof(_boardWidth));
+                OnPropertyChanged(nameof(_boardHeight));
+                Console.WriteLine($"Zmieniono rozmiar: {_boardWidth} x {_boardHeight}");
+            }
+        }
     }
 
     public ICommand ApplyBallsCommand { get; }
@@ -94,7 +107,7 @@ public class BoardViewModel : INotifyPropertyChanged
         Console.WriteLine($"Width: {BoardWidth}, Height: {BoardHeight}");
     }
 
-    private void ApplyBalls()
+    private void ApplyBalls(object _)
     {
 
         _timer.Start();
