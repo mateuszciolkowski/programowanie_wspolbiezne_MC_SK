@@ -2,23 +2,23 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ViewModel;assembly=ViewModel"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         Title="Ball Game" Height="600" Width="800">
 
     <Grid>
         <!-- UI u góry -->
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <TextBlock Text="Balls counter:" VerticalAlignment="Center" Margin="5"/>
             <TextBox Text="{Binding BallCountInput, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5"/>
-            <Button Content="Apply" Command="{Binding ApplyBallsCommand}" Margin="5"/>
+            <Button Content="Apply" Command="{Binding ApplyBallsCommand}" Width="48" Height="21" Margin="5"/>
         </StackPanel>
 
         <!-- Obszar dla kulek -->
-        <Border BorderBrush="Black" BorderThickness="1" Margin="10,50,10,10"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Canvas Background="White"
-                    Width="{Binding BoardWidth, Mode=TwoWay}"
+        <Border BorderBrush="Black" BorderThickness="1" Margin="10,50,10,10">
+            <Canvas Background="White" 
+                    Width="{Binding BoardWidth, Mode=TwoWay}" 
                     Height="{Binding BoardHeight, Mode=TwoWay}">
-                
+
                 <!-- KULKI -->
                 <ItemsControl ItemsSource="{Binding Balls}">
                     <ItemsControl.ItemsPanel>
@@ -40,8 +40,14 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-
             </Canvas>
         </Border>
+
+        <!-- EventTrigger do obsługi zmiany rozmiaru okna -->
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SizeChanged">
+                <i:InvokeCommandAction Command="{Binding ResizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
     </Grid>
 </Window>

@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System;
 using System.Diagnostics;
 using ViewModel;
+using System.Drawing;
+using System.Globalization;
 
 public class BoardViewModel : INotifyPropertyChanged
 {
@@ -45,7 +47,15 @@ public class BoardViewModel : INotifyPropertyChanged
     private readonly IDispatcher _dispatcher;
     private Timer _timer;
     public ObservableCollection<BallModel> Balls { get; set; }
-    
+
+    public ICommand ResizeCommand => new RelayCommand(OnResize);
+
+    private void OnResize()
+    {
+        BoardWidth = 800;  // example value, can be bound to the UI
+        BoardHeight = 600;
+    }
+
     public ICommand ApplyBallsCommand { get; }
     private string _ballCountInput;
     public string BallCountInput
@@ -134,5 +144,7 @@ public class BoardViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
+
  
+
 }
