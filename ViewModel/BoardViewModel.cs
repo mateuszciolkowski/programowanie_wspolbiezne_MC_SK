@@ -12,8 +12,35 @@ public class BoardViewModel : INotifyPropertyChanged
 {
     Random random = new Random();
     private readonly IBoardModel _boardModel;
-    public double Width { get; set; }
-    public double Height { get; set; }
+    private double _boardWidth;
+    public double BoardWidth
+    {
+        get => _boardWidth;
+        set
+        {
+            if (_boardWidth != value)
+            {
+                _boardWidth = value;
+                OnPropertyChanged();
+                _boardModel.ResizeBoard(_boardWidth, BoardHeight);
+            }
+        }
+    }
+    private double _boardHeight;
+    public double BoardHeight
+    {
+        get => _boardHeight;
+        set
+        {
+            if (_boardHeight != value)
+            {
+                _boardHeight = value;
+                OnPropertyChanged();
+                _boardModel.ResizeBoard(BoardWidth, _boardHeight);
+            }
+        }
+    }
+
 
     private readonly IDispatcher _dispatcher;
     private Timer _timer;
@@ -39,8 +66,8 @@ public class BoardViewModel : INotifyPropertyChanged
         _boardModel = new BoardModel(width, height);
         _dispatcher = dispatcher;
         Balls = _boardModel.Balls;  // Pobranie kolekcji piłek
-        Width = width;
-        Height = height;
+        BoardWidth = width;
+        BoardHeight = height;
 
         // Komendy
         ApplyBallsCommand = new RelayCommand(ApplyBalls);
@@ -49,6 +76,12 @@ public class BoardViewModel : INotifyPropertyChanged
         // Timer
         _timer = new Timer(14); // 60 FPS (16 ms)
         _timer.Elapsed += OnTimerElapsed;
+    }
+
+    public void UpdateBoardSize()
+    {
+        _boardModel.ResizeBoard(BoardWidth, BoardHeight);
+        Console.WriteLine($"Width: {BoardWidth}, Height: {BoardHeight}");
     }
 
     private void ApplyBalls()
@@ -64,14 +97,6 @@ public class BoardViewModel : INotifyPropertyChanged
             }
         }
     }
-    //private void StartMovingBalls()
-    //{
-
-
-    //    Console.WriteLine("Rozpoczęcie ruchu kulek.");
-    //    _timer.Start();
-    //}
-
 
     private void AddBall()
     {
@@ -79,14 +104,6 @@ public class BoardViewModel : INotifyPropertyChanged
         _boardModel.AddBall(random.NextDouble()*400+40, random.NextDouble() * 70+40, 70, 80, 80);
         OnPropertyChanged(nameof(Balls));
     }
-
-    //private void RemoveBall()
-    //{
-    //    _boardModel.RemoveBall();
-    //    OnPropertyChanged(nameof(Balls)); // Powiadomienie o zmianach w kolekcji Balls
-    //    LogBallCollection();  // Logowanie stanu kolekcji po każdej zmianie
-
-    //}
 
     private void ClearBalls()
     {
@@ -117,6 +134,5 @@ public class BoardViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
-    // Metoda do logowania stanu kolekcji kulek
  
 }

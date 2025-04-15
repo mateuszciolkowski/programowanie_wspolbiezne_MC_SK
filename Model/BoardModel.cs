@@ -48,6 +48,7 @@ namespace Model
 
         public void MoveTheBalls(double timeToMove)
         {
+
             for (int i = 0; i < Balls.Count; i++)
             {
                 var ball = Balls[i];
