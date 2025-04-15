@@ -1,21 +1,21 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using ViewModel;
 
 namespace View
 {
     public partial class MainWindow : Window
     {
-        public MainWindow(int ballCount)
+        public MainWindow(int ballcount)
         {
             InitializeComponent();
 
-            // Tworzymy akcję do odświeżania wizualizacji
-            Action invalidateVisual = () => { this.InvalidateVisual(); }; // Można to dostosować do potrzeby
+            // Tworzymy instancję Dispatcher
+            var dispatcher = new WpfDispatcher(); // Implementacja IDispatcher dla WPF
+            var width = this.Width;  // Możesz ustawić szerokość w kodzie-behind lub przekazać z XAML
+            var height = this.Height;  // Możesz ustawić wysokość w kodzie-behind lub przekazać z XAML
 
-            // Tworzymy ViewModel i przekazujemy parametry
-            var viewModel = new BoardViewModel(600, 800, ballCount, invalidateVisual); // 10 to przykładowa liczba kulek
-            DataContext = viewModel;
+            // Ustawiamy DataContext
+            this.DataContext = new BoardViewModel(dispatcher, width, height);
         }
     }
 }

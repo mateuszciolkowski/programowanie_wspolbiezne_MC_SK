@@ -55,6 +55,10 @@ namespace Logic
                 _balllogic.Bounce(ball, Width, Height);
             }
         }
+        public List<IBall> GetBalls()
+        {
+            return _balls;
+        }
     }
 
 }

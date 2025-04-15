@@ -1,86 +1,110 @@
 ﻿using Model;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Timers;
 using System.Windows.Input;
+using System;
+using System.Diagnostics;
+using ViewModel;
 
-namespace ViewModel
+public class BoardViewModel : INotifyPropertyChanged
 {
-    public class BoardViewModel : INotifyPropertyChanged
+    private readonly IBoardModel _boardModel;
+    private readonly IDispatcher _dispatcher;
+    private Timer _timer;
+
+    public double Width { get; set; }
+    public double Height { get; set; }
+
+    public ObservableCollection<BallModel> Balls { get; set; }
+    public ICommand StartMovingBallsCommand { get; }
+    public ICommand AddBallCommand { get; }
+    public ICommand RemoveBallCommand { get; }
+    public ICommand ClearBallsCommand { get; }
+    public ICommand StopMovingBallsCommand { get; }
+
+    public BoardViewModel(IDispatcher dispatcher, double width, double height)
     {
-        public ObservableCollection<BallModel> Balls { get; set; }
-        private readonly IBoardModel _boardModel;
-        private readonly Action _invalidateVisual;
+        _boardModel = new BoardModel(width, height);
+        _dispatcher = dispatcher;
+        Balls = _boardModel.Balls;  // Pobranie kolekcji piłek
+        Width = width;
+        Height = height;
 
-        public ICommand AddBallCommand { get; }
-        public ICommand RemoveBallCommand { get; }
-        public ICommand ClearBallsCommand { get; }
-        public ICommand MoveBallsCommand { get; }
+        // Komendy
+        StartMovingBallsCommand = new RelayCommand(StartMovingBalls);
+        AddBallCommand = new RelayCommand(AddBall);
+        RemoveBallCommand = new RelayCommand(RemoveBall);
+        ClearBallsCommand = new RelayCommand(ClearBalls);
+        StopMovingBallsCommand = new RelayCommand(StopMovingBalls);
 
-        // Konstruktor publiczny bez parametrów
-        public BoardViewModel()
+        // Timer
+        _timer = new Timer(16); // 60 FPS (16 ms)
+        _timer.Elapsed += OnTimerElapsed;
+    }
+
+    private void StartMovingBalls()
+    {
+ 
+
+        Console.WriteLine("Rozpoczęcie ruchu kulek.");
+        _timer.Start();
+    }
+
+    private void StopMovingBalls()
+    {
+        Console.WriteLine("Zakończenie ruchu kulek.");
+        _timer.Stop();
+    }
+
+    private void AddBall()
+    {
+        _boardModel.AddBall(50, 50, 20, 100, 80);
+        OnPropertyChanged(nameof(Balls));
+        LogBallCollection();  // Logowanie stanu kolekcji po każdej zmianie
+    }
+
+    private void RemoveBall()
+    {
+        _boardModel.RemoveBall();
+        OnPropertyChanged(nameof(Balls)); // Powiadomienie o zmianach w kolekcji Balls
+        LogBallCollection();  // Logowanie stanu kolekcji po każdej zmianie
+
+    }
+
+    private void ClearBalls()
+    {
+        _boardModel.ClearBalls();
+        OnPropertyChanged(nameof(Balls)); // Powiadomienie o zmianach w kolekcji Balls
+        LogBallCollection();  // Logowanie stanu kolekcji po każdej zmianie
+
+    }
+
+    private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+    {
+        _boardModel.MoveTheBalls(0.016);
+        _dispatcher.Invoke(new Action(() =>
         {
-            _boardModel = new BoardModel(800, 600); // Zainicjalizuj domyślną szerokość i wysokość
-            Balls = _boardModel.Balls;
-            _invalidateVisual = () => { }; // Pusta akcja
-            AddBallCommand = new RelayCommand(AddBall);
-            RemoveBallCommand = new RelayCommand(RemoveBall);
-            ClearBallsCommand = new RelayCommand(ClearBalls);
-            MoveBallsCommand = new RelayCommand(MoveBalls);
-        }
+            OnPropertyChanged(nameof(Balls));  // Zaktualizowanie widoku po każdej zmianie piłek
+            LogBallCollection();  // Logowanie stanu kolekcji po każdej zmianie
 
-        public BoardViewModel(double height, double width, int ballCount, Action invalidateVisual)
+        }));
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string property = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+    }
+    // Metoda do logowania stanu kolekcji kulek
+    private void LogBallCollection()
+    {
+        Console.WriteLine("Aktualny stan kolekcji kulek:");
+        foreach (var ball in Balls)
         {
-            _boardModel = new BoardModel(width, height);
-            Balls = _boardModel.Balls;
-            _invalidateVisual = invalidateVisual;
-
-            // Dodaj kulki do gry na podstawie przekazanej liczby
-            for (int i = 0; i < ballCount; i++)
-            {
-                AddBall();
-            }
-
-            AddBallCommand = new RelayCommand(AddBall);
-            RemoveBallCommand = new RelayCommand(RemoveBall);
-            ClearBallsCommand = new RelayCommand(ClearBalls);
-            MoveBallsCommand = new RelayCommand(MoveBalls);
-        }
-
-        private void AddBall()
-        {
-            _boardModel.AddBall(50, 50, 20, 100, 80); // przykładowe dane
-            OnPropertyChanged(nameof(Balls));
-            _invalidateVisual();
-        }
-
-        private void RemoveBall()
-        {
-            _boardModel.RemoveBall();
-            OnPropertyChanged(nameof(Balls));
-            _invalidateVisual();
-        }
-
-        private void ClearBalls()
-        {
-            _boardModel.ClearBalls();
-            OnPropertyChanged(nameof(Balls));
-            _invalidateVisual();
-        }
-
-        private void MoveBalls()
-        {
-            _boardModel.MoveTheBalls(0.1); // np. 0.1 sekundy
-            OnPropertyChanged(nameof(Balls));
-            _invalidateVisual();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Debug.WriteLine($"Kulka: X={ball.X}, Y={ball.Y}, Radius={ball.Radius}, VelocityX={ball.VelocityX}, VelocityY={ball.VelocityY}");
         }
     }
 }

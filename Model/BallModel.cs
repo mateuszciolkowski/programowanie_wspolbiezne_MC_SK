@@ -1,94 +1,92 @@
 ﻿using System.ComponentModel;
 
-namespace Model
+public class BallModel : INotifyPropertyChanged
 {
-    public class BallModel : INotifyPropertyChanged
+    private double _x;
+    private double _y;
+    private double _radius;
+    private double _velocityX; // Prędkość w osi X
+    private double _velocityY; // Prędkość w osi Y
+
+    // Konstruktor przyjmujący 5 argumentów
+    public BallModel(double x, double y, double radius, double velocityX, double velocityY)
     {
-        private double _x;
-        private double _y;
-        private double _radius;
-        private double _velocityX;
-        private double _velocityY;
+        _x = x;
+        _y = y;
+        _radius = radius;
+        _velocityX = velocityX;
+        _velocityY = velocityY;
+    }
 
-        public double X
+    public double X
+    {
+        get => _x;
+        set
         {
-            get => _x;
-            set
+            if (_x != value)
             {
-                if (_x != value)
-                {
-                    _x = value;
-                    OnPropertyChanged(nameof(X));
-                }
+                _x = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public double Y
+    public double Y
+    {
+        get => _y;
+        set
         {
-            get => _y;
-            set
+            if (_y != value)
             {
-                if (_y != value)
-                {
-                    _y = value;
-                    OnPropertyChanged(nameof(Y));
-                }
+                _y = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public double Radius
+    public double Radius
+    {
+        get => _radius;
+        set
         {
-            get => _radius;
-            set
+            if (_radius != value)
             {
-                if (_radius != value)
-                {
-                    _radius = value;
-                    OnPropertyChanged(nameof(Radius));
-                }
+                _radius = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public double VelocityX
+    public double VelocityX
+    {
+        get => _velocityX;
+        set
         {
-            get => _velocityX;
-            set
+            if (_velocityX != value)
             {
-                if (_velocityX != value)
-                {
-                    _velocityX = value;
-                    OnPropertyChanged(nameof(VelocityX));
-                }
+                _velocityX = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public double VelocityY
+    public double VelocityY
+    {
+        get => _velocityY;
+        set
         {
-            get => _velocityY;
-            set
+            if (_velocityY != value)
             {
-                if (_velocityY != value)
-                {
-                    _velocityY = value;
-                    OnPropertyChanged(nameof(VelocityY));
-                }
+                _velocityY = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public BallModel(double x, double y, double radius, double velocityX, double velocityY)
-        {
-            _x = x;
-            _y = y;
-            _radius = radius;
-            _velocityX = velocityX;
-            _velocityY = velocityY;
-        }
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

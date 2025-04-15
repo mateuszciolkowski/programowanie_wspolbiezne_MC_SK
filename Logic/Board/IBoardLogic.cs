@@ -14,5 +14,6 @@ namespace Logic
         void RemoveBall();
         public void ClearBalls();
         void MoveTheBalls(double timeToMove);
+        List<IBall> GetBalls();
     }
 }
