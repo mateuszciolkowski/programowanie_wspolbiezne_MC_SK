@@ -5,10 +5,10 @@ public class BallModel : INotifyPropertyChanged
     private double _x;
     private double _y;
     private double _radius;
-    private double _velocityX; // Prędkość w osi X
-    private double _velocityY; // Prędkość w osi Y
+    private double _velocityX; 
+    private double _velocityY; 
 
-    // Konstruktor przyjmujący 5 argumentów
+   
     public BallModel(double x, double y, double radius, double velocityX, double velocityY)
     {
         _x = x;

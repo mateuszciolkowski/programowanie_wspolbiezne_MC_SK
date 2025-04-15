@@ -6,7 +6,6 @@ namespace Model
 {
     public class BoardModel : IBoardModel
     {
-        // Publiczna właściwość Width i Height
         public double Width { get; set; }
         public double Height { get; set; }
         BoardLogic boardLogic = new BoardLogic(400,400);
@@ -17,7 +16,7 @@ namespace Model
         {
             Width = width;
             Height = height;
-            Balls = new ObservableCollection<BallModel>(); // Inicjalizacja pustą kolekcją
+            Balls = new ObservableCollection<BallModel>(); 
         }
 
         public void ResizeBoard(double width, double height)

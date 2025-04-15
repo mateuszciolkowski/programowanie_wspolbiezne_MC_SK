@@ -5,7 +5,8 @@
         Title="Ball Game" Height="600" Width="800">
 
     <Grid>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+        <!-- Pasek przycisków u góry -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Panel.ZIndex="1">
             <Button Content="Add Ball" Command="{Binding AddBallCommand}" Width="100" Height="30" Margin="5"/>
             <Button Content="Remove Ball" Command="{Binding RemoveBallCommand}" Width="100" Height="30" Margin="5"/>
             <Button Content="Clear Balls" Command="{Binding ClearBallsCommand}" Width="100" Height="30" Margin="5"/>
@@ -13,16 +14,26 @@
             <Button Content="Stop Moving Balls" Command="{Binding StopMovingBallsCommand}" Width="150" Height="30" Margin="5"/>
         </StackPanel>
 
-        <Canvas Name="GameCanvas" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,50,10,10">
-            <ItemsControl ItemsSource="{Binding Balls}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" 
-                                 Fill="Red" 
-                                 Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Canvas>
+        <!-- Obszar gry z kulkami -->
+        <ItemsControl ItemsSource="{Binding Balls}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="White"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </Window>
