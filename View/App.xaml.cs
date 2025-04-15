@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using ViewModel;
 
 namespace View
 {
@@ -7,10 +6,8 @@ namespace View
     {
         public App()
         {
-            var window = new MainWindow(); 
-            var viewModel = new BoardViewModel(450, 800, () => Application.Current.Dispatcher.Invoke(() => { }));
-            window.DataContext = viewModel;
-            window.Show();
+            var setupWindow = new SetupWindow();
+            setupWindow.Show();
         }
     }
 }

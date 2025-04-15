@@ -1,20 +1,20 @@
 ﻿using System.Collections.ObjectModel;
 using Logic;
+
 namespace Model
 {
-    public class BoardModel: IBoardModel
+    public class BoardModel : IBoardModel
     {
         public double Width { get; set; }
         public double Height { get; set; }
-        //public List<BallModel> Balls { get; set; }
-        public readonly IBoardLogic boardLogic;
         public ObservableCollection<BallModel> Balls { get; set; }
 
-         public BoardModel(double width, double height)
+        private readonly IBoardLogic boardLogic;
+
+        public BoardModel(double width, double height)
         {
             Width = width;
             Height = height;
-            //Balls = new List<BallModel>();
             Balls = new ObservableCollection<BallModel>();
             boardLogic = new BoardLogic(width, height);
         }
@@ -32,12 +32,6 @@ namespace Model
             Balls.Add(new BallModel(x, y, radius, velocityX, velocityY));
         }
 
-        public void ClearBalls()
-        {
-            Balls.Clear();
-            boardLogic.ClearBalls();
-        }
-
         public void RemoveBall()
         {
             boardLogic.RemoveBall();
@@ -47,9 +41,16 @@ namespace Model
             }
         }
 
+        public void ClearBalls()
+        {
+            Balls.Clear();
+            boardLogic.ClearBalls();
+        }
+
         public void MoveTheBalls(double timeToMove)
         {
             boardLogic.MoveTheBalls(timeToMove);
+            // Optionally update the ball positions after move (if necessary for ViewModel)
         }
     }
 }
