@@ -5,35 +5,35 @@
         Title="Ball Game" Height="600" Width="800">
 
     <Grid>
-        <!-- Pasek przycisków u góry -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Panel.ZIndex="1">
-            <Button Content="Add Ball" Command="{Binding AddBallCommand}" Width="100" Height="30" Margin="5"/>
-            <Button Content="Remove Ball" Command="{Binding RemoveBallCommand}" Width="100" Height="30" Margin="5"/>
-            <Button Content="Clear Balls" Command="{Binding ClearBallsCommand}" Width="100" Height="30" Margin="5"/>
-            <Button Content="Start Moving Balls" Command="{Binding StartMovingBallsCommand}" Width="150" Height="30" Margin="5"/>
-            <Button Content="Stop Moving Balls" Command="{Binding StopMovingBallsCommand}" Width="150" Height="30" Margin="5"/>
+            <TextBlock Text="Balls counter:" VerticalAlignment="Center" Margin="5"/>
+            <TextBox Text="{Binding BallCountInput, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5"/>
+            <Button Content="Apply" Command="{Binding ApplyBallsCommand}" Width="48" Height="21" Margin="5"/>
         </StackPanel>
 
-        <!-- Obszar gry z kulkami -->
-        <ItemsControl ItemsSource="{Binding Balls}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas Background="White"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
 
-            <ItemsControl.ItemContainerStyle>
-                <Style>
-                    <Setter Property="Canvas.Left" Value="{Binding X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                </Style>
-            </ItemsControl.ItemContainerStyle>
+        <Border BorderBrush="Black" BorderThickness="1" Margin="10,50,10,10">
+            <ItemsControl ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="White"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
     </Grid>
 </Window>

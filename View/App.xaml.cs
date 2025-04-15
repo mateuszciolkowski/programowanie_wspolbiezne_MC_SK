@@ -6,7 +6,7 @@ namespace View
     {
         public App()
         {
-            var setupWindow = new SetupWindow();
+            var setupWindow = new MainWindow();
             setupWindow.Show();
         }
     }

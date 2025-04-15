@@ -48,14 +48,15 @@ namespace Model
 
         public void MoveTheBalls(double timeToMove)
         {
-            foreach (var ball in Balls)
+            for (int i = 0; i < Balls.Count; i++)
             {
+                var ball = Balls[i];
+
                 // Aktualizacja pozycji na podstawie prędkości
                 ball.X += ball.VelocityX * timeToMove;
                 ball.Y += ball.VelocityY * timeToMove;
 
                 // Logowanie pozycji
-                Debug.WriteLine($"Ball at X: {ball.X}, Y: {ball.Y}");
 
                 // Odbicie od krawędzi ekranu
                 if (ball.X - ball.Radius < 0 || ball.X + ball.Radius > Width)
@@ -68,6 +69,7 @@ namespace Model
                 }
             }
         }
+
 
         public void ClearBalls()
         {
