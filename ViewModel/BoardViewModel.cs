@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Media.Media3D;
 using System.Windows;
+using System.Xml.Linq;
 
 public class BoardViewModel : INotifyPropertyChanged
 {
@@ -64,7 +65,6 @@ public class BoardViewModel : INotifyPropertyChanged
                 _boardModel.ResizeBoard(_boardWidth, _boardHeight); // <- jeśli chcesz, by model znał nowy rozmiar
                 OnPropertyChanged(nameof(_boardWidth));
                 OnPropertyChanged(nameof(_boardHeight));
-                Console.WriteLine($"Zmieniono rozmiar: {_boardWidth} x {_boardHeight}");
             }
         }
     }
@@ -84,13 +84,13 @@ public class BoardViewModel : INotifyPropertyChanged
         }
     }
 
-    public BoardViewModel(IDispatcher dispatcher, double width, double height)
+    public BoardViewModel(IDispatcher dispatcher)
     {
-        _boardModel = new BoardModel(width, height);
+        _boardModel = new BoardModel(800,600);
         _dispatcher = dispatcher;
         Balls = _boardModel.Balls;  // Pobranie kolekcji piłek
-        BoardWidth = width;
-        BoardHeight = height;
+        BoardWidth = 800;
+        BoardHeight = 600;
 
         // Komendy
         ApplyBallsCommand = new RelayCommand(ApplyBalls);
@@ -99,13 +99,12 @@ public class BoardViewModel : INotifyPropertyChanged
         // Timer
         _timer = new Timer(14); // 60 FPS (16 ms)
         _timer.Elapsed += OnTimerElapsed;
+
+        _boardWidth = 800;
+        _boardHeight = 600;
     }
 
-    public void UpdateBoardSize()
-    {
-        _boardModel.ResizeBoard(BoardWidth, BoardHeight);
-        Console.WriteLine($"Width: {BoardWidth}, Height: {BoardHeight}");
-    }
+
 
     private void ApplyBalls(object _)
     {
@@ -124,7 +123,7 @@ public class BoardViewModel : INotifyPropertyChanged
     private void AddBall()
     {
         
-        _boardModel.AddBall(random.NextDouble()*400+40, random.NextDouble() * 70+40, 70, 80, 80);
+        _boardModel.AddBall(random.NextDouble()*500, random.NextDouble() * 500 , (random.NextDouble()*50)+50, (random.NextDouble() * 250) - 50, (random.NextDouble() * 250) - 50);
         OnPropertyChanged(nameof(Balls));
     }
 

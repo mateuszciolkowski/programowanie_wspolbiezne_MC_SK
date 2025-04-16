@@ -12,11 +12,10 @@ namespace View
             {
                 // Tworzymy instancję Dispatcher
                 var dispatcher = new WpfDispatcher(); // Implementacja IDispatcher dla WPF
-                var width = this.Width;  // Możesz ustawić szerokość w kodzie-behind lub przekazać z XAML
-                var height = this.Height;  // Możesz ustawić wysokość w kodzie-behind lub przekazać z XAML
+               
 
                 // Ustawiamy DataContext
-                this.DataContext = new BoardViewModel(dispatcher, width, height);
+                this.DataContext = new BoardViewModel(dispatcher);
             }
         }
        

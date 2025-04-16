@@ -7,44 +7,50 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- UI górne -->
             <RowDefinition Height="*"/>
-            <!-- Canvas -->
         </Grid.RowDefinitions>
 
-        <!-- UI u góry -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top"  Grid.Row="0">
-            <TextBlock Text="Balls counter:" VerticalAlignment="Center" />
-            <TextBox Text="{Binding BallCountInput, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-            <Button Content="Apply" Command="{Binding ApplyBallsCommand}" Width="48" Height="21" />
-        </StackPanel>
+        <!-- Canvas jako główny obszar do rysowania kulek -->
+        <Canvas Name="MainCanvas" Background="Gray">
 
-        <!-- Obszar dla kulek -->
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1">
-            <Canvas Name="MainCanvas" Background="Blue">
-                <ItemsControl ItemsSource="{Binding Balls}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+            <!-- Kulki -->
+            <ItemsControl ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemContainerStyle>
-                        <Style>
-                            <Setter Property="Canvas.Left" Value="{Binding X}" />
-                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Ellipse Width="{Binding Radius}" Height="{Binding Radius}" Fill="Red"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Canvas>
-        </Border>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="{Binding Radius}" 
+                                Height="{Binding Radius}" 
+                                Fill="White" 
+                                Stroke="Black" 
+                                StrokeThickness="2"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- StackPanel dla UI do wpisywania liczby kulek -->
+            <StackPanel Orientation="Horizontal"
+                        Canvas.Left="10"
+                        Canvas.Top="10"
+                        Background="#AAFFFFFF"
+                        VerticalAlignment="Top">
+                <TextBlock Text="Balls counter:" VerticalAlignment="Center" />
+                <TextBox Text="{Binding BallCountInput, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5,0"/>
+                <Button Content="Apply" Command="{Binding ApplyBallsCommand}" Width="48" Height="21" />
+            </StackPanel>
+
+        </Canvas>
 
         <!-- EventTrigger do zmiany rozmiaru okna -->
         <i:Interaction.Triggers>

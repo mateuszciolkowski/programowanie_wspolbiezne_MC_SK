@@ -15,7 +15,7 @@ namespace Model
         public BoardModel(double width, double height)
         {
             Width = width;
-            Height = width;
+            Height = height;
             boardLogic = new BoardLogic(width, height);
             Balls = new ObservableCollection<BallModel>(); 
         }
@@ -30,7 +30,7 @@ namespace Model
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
             // Tworzymy nowy obiekt BallModel za pomocą konstruktora
-            var ball = new BallModel(x, y, radius, velocityX, velocityY);
+            var ball = new BallModel(x, y, radius);
 
             // Dodajemy go do kolekcji Balls w BoardModel
             Balls.Add(ball);
@@ -50,32 +50,21 @@ namespace Model
 
         public void MoveTheBalls(double timeToMove)
         {
-
-            for (int i = 0; i < Balls.Count; i++)
+            boardLogic.MoveTheBalls(timeToMove);
+            var balls = boardLogic.GetBalls();
+            for (int i = 0; i < balls.Count(); i++)
             {
-                var ball = Balls[i];
-
-                // Aktualizacja pozycji na podstawie prędkości
-                ball.X += ball.VelocityX * timeToMove;
-                ball.Y += ball.VelocityY * timeToMove;
-
-                // Logowanie pozycji
-
-                // Odbicie od krawędzi ekranu
-                if (ball.X - ball.Radius < 0 || ball.X + ball.Radius > Width)
-                {
-                    ball.VelocityX = -ball.VelocityX; // Zmieniamy kierunek na przeciwny
-                }
-                if (ball.Y - ball.Radius < 0 || ball.Y + ball.Radius > Height)
-                {
-                    ball.VelocityY = -ball.VelocityY; // Zmieniamy kierunek na przeciwny
-                }
+                Balls[i].X = balls[i].X;
+                Balls[i].Y = balls[i].Y;
             }
+
+
         }
 
 
         public void ClearBalls()
         {
+            boardLogic.ClearBalls();
             Balls.Clear();
         }
     }

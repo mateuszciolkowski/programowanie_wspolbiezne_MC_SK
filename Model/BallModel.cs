@@ -6,17 +6,19 @@ public class BallModel : INotifyPropertyChanged
     private double _y;
     private double _radius;
     private double _velocityX; 
-    private double _velocityY; 
-
+    private double _velocityY;
    
-    public BallModel(double x, double y, double radius, double velocityX, double velocityY)
+
+
+    public BallModel(double x, double y, double radius)
     {
-        _x = x;
-        _y = y;
+        _x = x - radius;
+        _y = y - radius;
         _radius = radius;
-        _velocityX = velocityX;
-        _velocityY = velocityY;
-    }
+        //_velocityX = velocityX;
+        //_velocityY = velocityY;
+        
+      }
 
     public double X
     {
@@ -57,31 +59,8 @@ public class BallModel : INotifyPropertyChanged
         }
     }
 
-    public double VelocityX
-    {
-        get => _velocityX;
-        set
-        {
-            if (_velocityX != value)
-            {
-                _velocityX = value;
-                OnPropertyChanged();
-            }
-        }
-    }
 
-    public double VelocityY
-    {
-        get => _velocityY;
-        set
-        {
-            if (_velocityY != value)
-            {
-                _velocityY = value;
-                OnPropertyChanged();
-            }
-        }
-    }
+    
 
     public event PropertyChangedEventHandler PropertyChanged;
 

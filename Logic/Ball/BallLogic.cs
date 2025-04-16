@@ -15,12 +15,27 @@ namespace Logic
 
         public void Bounce(IBall ball, double width, double height)
         {
-            if (ball.X - ball.Radius <= 0 || ball.X + ball.Radius >= width)
+            // Lewa lub prawa krawędź
+            if (ball.X <= 0)
             {
+                ball.X = 0;
                 ball.VelocityX = -ball.VelocityX;
             }
-            if (ball.Y - ball.Radius <= 0 || ball.Y + ball.Radius >= height)
+            else if (ball.X + ball.Radius >= width)
             {
+                ball.X = width - ball.Radius;
+                ball.VelocityX = -ball.VelocityX;
+            }
+
+            // Góra lub dół
+            if (ball.Y <= 0)
+            {
+                ball.Y = 0;
+                ball.VelocityY = -ball.VelocityY;
+            }
+            else if (ball.Y + ball.Radius >= height)
+            {
+                ball.Y = height - ball.Radius;
                 ball.VelocityY = -ball.VelocityY;
             }
         }

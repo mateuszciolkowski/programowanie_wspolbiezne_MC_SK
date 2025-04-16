@@ -4,8 +4,9 @@
     {
         public Ball(double x, double y, double radius, double velocityX, double velocityY)
         {
-            X = x;
-            Y = y;
+
+            X = x - radius;
+            Y = y - radius;
             Radius = radius;
             VelocityX = velocityX;
             VelocityY = velocityY;
@@ -15,5 +16,6 @@
         public double Radius { get; set; }
         public double VelocityX { get; set; }
         public double VelocityY { get; set; }
+   
     }
 }
