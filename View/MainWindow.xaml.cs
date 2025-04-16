@@ -10,11 +10,7 @@ namespace View
             InitializeComponent();
             if (Application.Current != null)
             {
-                // Tworzymy instancję Dispatcher
-                var dispatcher = new WpfDispatcher(); // Implementacja IDispatcher dla WPF
-               
-
-                // Ustawiamy DataContext
+                var dispatcher = new WpfDispatcher(); 
                 this.DataContext = new BoardViewModel(dispatcher);
             }
         }

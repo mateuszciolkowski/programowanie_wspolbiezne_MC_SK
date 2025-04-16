@@ -9,7 +9,6 @@ namespace Model
         public double Width { get; set; }
         public double Height { get; set; }
         BoardLogic boardLogic;
-        // Publiczna ObservableCollection
         public ObservableCollection<BallModel> Balls { get; set; }
 
         public BoardModel(double width, double height)
@@ -29,13 +28,10 @@ namespace Model
 
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
-            // Tworzymy nowy obiekt BallModel za pomocą konstruktora
             var ball = new BallModel(x, y, radius);
 
-            // Dodajemy go do kolekcji Balls w BoardModel
             Balls.Add(ball);
 
-            // Jeśli konieczne, możemy dodać piłkę do logiki gry
             boardLogic.AddBall(x, y, radius, velocityX, velocityY);
         }
 

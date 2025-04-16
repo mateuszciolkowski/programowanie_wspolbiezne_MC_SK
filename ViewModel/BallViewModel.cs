@@ -34,7 +34,6 @@ namespace ViewModel
             Radius = radius;
         }
 
-        // Metoda do aktualizacji właściwości kulki
         public void Update(Ball modelBall)
         {
             X = modelBall.X;

@@ -15,7 +15,6 @@ namespace Logic
 
         public void Bounce(IBall ball, double width, double height)
         {
-            // Lewa lub prawa krawędź
             if (ball.X <= 0)
             {
                 ball.X = 0;
@@ -27,7 +26,6 @@ namespace Logic
                 ball.VelocityX = -ball.VelocityX;
             }
 
-            // Góra lub dół
             if (ball.Y <= 0)
             {
                 ball.Y = 0;

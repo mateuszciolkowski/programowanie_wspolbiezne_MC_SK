@@ -62,7 +62,7 @@ public class BoardViewModel : INotifyPropertyChanged
                 _boardWidth = element.ActualWidth;
                 _boardHeight = element.ActualHeight;
 
-                _boardModel.ResizeBoard(_boardWidth, _boardHeight); // <- jeśli chcesz, by model znał nowy rozmiar
+                _boardModel.ResizeBoard(_boardWidth, _boardHeight); 
                 OnPropertyChanged(nameof(_boardWidth));
                 OnPropertyChanged(nameof(_boardHeight));
             }
@@ -88,7 +88,7 @@ public class BoardViewModel : INotifyPropertyChanged
     {
         _boardModel = new BoardModel(800,600);
         _dispatcher = dispatcher;
-        Balls = _boardModel.Balls;  // Pobranie kolekcji piłek
+        Balls = _boardModel.Balls;  
         BoardWidth = 800;
         BoardHeight = 600;
 
@@ -97,7 +97,7 @@ public class BoardViewModel : INotifyPropertyChanged
        
 
         // Timer
-        _timer = new Timer(14); // 60 FPS (16 ms)
+        _timer = new Timer(14); 
         _timer.Elapsed += OnTimerElapsed;
 
         _boardWidth = 800;
@@ -130,18 +130,16 @@ public class BoardViewModel : INotifyPropertyChanged
     private void ClearBalls()
     {
         _boardModel.ClearBalls();
-        OnPropertyChanged(nameof(Balls)); // Powiadomienie o zmianach w kolekcji Balls
+        OnPropertyChanged(nameof(Balls)); 
     }
 
     private void OnTimerElapsed(object sender, ElapsedEventArgs e)
     {
         _boardModel.MoveTheBalls(0.016);
 
-        // Zaktualizuj widok tylko raz na każdą klatkę
         _dispatcher.Invoke(new Action(() =>
         {
-            // Wprowadź opóźnienie między aktualizacjami, np. co 2 klatki
-            if (e.SignalTime.Second % 2 == 0) // Może być lepiej dostosowane
+            if (e.SignalTime.Second % 2 == 0) 
             {
                 OnPropertyChanged(nameof(Balls));
             }

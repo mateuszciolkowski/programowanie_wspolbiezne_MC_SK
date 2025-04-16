@@ -10,10 +10,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Canvas jako główny obszar do rysowania kulek -->
         <Canvas Name="MainCanvas" Background="Gray">
 
-            <!-- Kulki -->
             <ItemsControl ItemsSource="{Binding Balls}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -39,7 +37,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- StackPanel dla UI do wpisywania liczby kulek -->
             <StackPanel Orientation="Horizontal"
                         Canvas.Left="10"
                         Canvas.Top="10"
@@ -52,7 +49,6 @@
 
         </Canvas>
 
-        <!-- EventTrigger do zmiany rozmiaru okna -->
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="SizeChanged">
                 <i:InvokeCommandAction Command="{Binding ResizeCommand}" PassEventArgsToCommand="True"/>
