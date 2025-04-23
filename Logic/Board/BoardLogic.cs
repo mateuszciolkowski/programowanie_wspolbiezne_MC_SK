@@ -1,72 +1,109 @@
 ﻿using Data;
 using Logic;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Logic
 {
     public class BoardLogic : IBoardLogic
     {
-        public double Width { get;  set; }
-        public double Height { get;  set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
 
-        private List<IBall> _balls;
-        private IBallLogic _balllogic;
+        private readonly List<IBall> _balls = new();
+        private readonly object _ballLock = new();
+        private readonly IBallLogic _balllogic;
 
-
-        public IReadOnlyList<IBall> Balls => _balls.AsReadOnly();
+        public IReadOnlyList<IBall> Balls
+        {
+            get
+            {
+                lock (_ballLock)
+                {
+                    return _balls.AsReadOnly();
+                }
+            }
+        }
 
         public BoardLogic(double width, double height)
         {
             Width = width;
             Height = height;
-            _balls = new List<IBall>();
             _balllogic = new BallLogic();
         }
+
         public void ResizeBoard(double width, double height)
         {
             Width = width;
             Height = height;
         }
+
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
-            IBall newBall = _balllogic.CreateBall(x, y, radius, velocityX, velocityY);
-            _balls.Add(newBall);
+            var ball = _balllogic.CreateBall(x, y, radius, velocityX, velocityY);
+            lock (_ballLock)
+            {
+                _balls.Add(ball);
+            }
         }
 
         public void RemoveBall()
         {
-            if (_balls.Count > 0)
+            lock (_ballLock)
             {
-                _balls.RemoveAt(_balls.Count - 1);
+                if (_balls.Count > 0)
+                {
+                    _balls.RemoveAt(_balls.Count - 1);
+                }
             }
         }
 
         public void ClearBalls()
         {
-            _balls.Clear();
+            lock (_ballLock)
+            {
+                _balls.Clear();
+            }
         }
 
         public void MoveTheBalls(double timeToMove)
         {
-            for (int i = 0; i < _balls.Count; i++)
+            List<IBall> snapshot;
+            lock (_ballLock)
             {
-                _balllogic.Move(_balls[i], timeToMove);
-                _balllogic.Bounce(_balls[i], Width, Height);
+                snapshot = new List<IBall>(_balls);
             }
 
-            for (int i = 0; i < _balls.Count; i++)
+            // Równoległe poruszanie i odbijanie od ścian
+            Parallel.ForEach(snapshot, ball =>
             {
-                for (int j = i + 1; j < _balls.Count; j++)
+                _balllogic.Move(ball, timeToMove);
+                _balllogic.Bounce(ball, Width, Height);
+            });
+
+            // Kolizje między kulkami (z zachowaniem synchronizacji)
+            int count = snapshot.Count;
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = i + 1; j < count; j++)
                 {
-                    _balllogic.BounceBeetwenBalls(_balls[i], _balls[j]);
+                    lock (_ballLock)
+                    {
+                        _balllogic.BounceBeetwenBalls(snapshot[i], snapshot[j]);
+                    }
                 }
             }
         }
+
         public List<IBall> GetBalls()
         {
-            return _balls;
+            lock (_ballLock)
+            {
+                return new List<IBall>(_balls);
+            }
         }
     }
-
 }
