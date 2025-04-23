@@ -49,10 +49,18 @@ namespace Logic
 
         public void MoveTheBalls(double timeToMove)
         {
-            foreach (var ball in _balls)
+            for (int i = 0; i < _balls.Count; i++)
             {
-                _balllogic.Move(ball, timeToMove);
-                _balllogic.Bounce(ball, Width, Height);
+                _balllogic.Move(_balls[i], timeToMove);
+                _balllogic.Bounce(_balls[i], Width, Height);
+            }
+
+            for (int i = 0; i < _balls.Count; i++)
+            {
+                for (int j = i + 1; j < _balls.Count; j++)
+                {
+                    _balllogic.BounceBeetwenBalls(_balls[i], _balls[j]);
+                }
             }
         }
         public List<IBall> GetBalls()
