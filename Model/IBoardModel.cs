@@ -6,12 +6,14 @@ namespace Model
     {
         double Width { get; }
         double Height { get; }
-        public ObservableCollection<BallModel> Balls { get; set; }
+        ObservableCollection<BallModel> Balls { get; set; }
 
-        public void ResizeBoard(double width, double height);
-        public void AddBall(double x, double y, double radius, double velocityX, double velocityY);
-        public void RemoveBall();
-        public void MoveTheBalls(double timeToMove);
-        public void ClearBalls();
+        void ResizeBoard(double width, double height);
+        void AddBall(double x, double y, double radius, double velocityX, double velocityY);
+        void RemoveBall();
+        void ClearBalls();
+
+        // Dodajemy event do interfejsu
+        event Action BallsMovedEvent;
     }
 }

@@ -1,10 +1,12 @@
-﻿using Data;
-using Logic;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
+using Data;
+using System.Diagnostics; // Dodajemy przestrzeń nazw dla Debug
+
 
 namespace Logic
 {
@@ -15,7 +17,11 @@ namespace Logic
 
         private readonly List<IBall> _balls = new();
         private readonly object _ballLock = new();
-        private readonly IBallLogic _balllogic;
+        private readonly IBallLogic _ballLogic;
+        private System.Timers.Timer _timer;
+        private double _interval = 5; 
+
+        public event Action BallsMoved; 
 
         public IReadOnlyList<IBall> Balls
         {
@@ -32,10 +38,25 @@ namespace Logic
         {
             Width = width;
             Height = height;
-            _balllogic = new BallLogic();
+            _ballLogic = new BallLogic();
+
+            // Ustawienie timera
+            _timer = new System.Timers.Timer(_interval);
+            _timer.Elapsed += TimerElapsed;
+            _timer.Start();
         }
 
-        public void ResizeBoard(double width, double height)
+        // Funkcja wywoływana przez Timer co 16ms
+
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
+         {
+
+        MoveTheBalls(_interval / 1000.0);
+
+        BallsMoved?.Invoke();
+        }
+
+    public void ResizeBoard(double width, double height)
         {
             Width = width;
             Height = height;
@@ -43,7 +64,7 @@ namespace Logic
 
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
         {
-            var ball = _balllogic.CreateBall(x, y, radius, velocityX, velocityY);
+            var ball = _ballLogic.CreateBall(x, y, radius, velocityX, velocityY);
             lock (_ballLock)
             {
                 _balls.Add(ball);
@@ -76,15 +97,12 @@ namespace Logic
             {
                 snapshot = new List<IBall>(_balls);
             }
-
-            // Równoległe poruszanie i odbijanie od ścian
             Parallel.ForEach(snapshot, ball =>
             {
-                _balllogic.Move(ball, timeToMove);
-                _balllogic.Bounce(ball, Width, Height);
+                _ballLogic.Move(ball, timeToMove);
+                _ballLogic.Bounce(ball, Width, Height);
             });
 
-            // Kolizje między kulkami (z zachowaniem synchronizacji)
             int count = snapshot.Count;
             for (int i = 0; i < count; i++)
             {
@@ -92,7 +110,7 @@ namespace Logic
                 {
                     lock (_ballLock)
                     {
-                        _balllogic.BounceBeetwenBalls(snapshot[i], snapshot[j]);
+                        _ballLogic.BounceBeetwenBalls(snapshot[i], snapshot[j]);
                     }
                 }
             }

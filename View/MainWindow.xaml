@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ViewModel;assembly=ViewModel"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        Title="Ball Game" Height="600" Width="800">
+        Title="Ball Game" Height="635" Width="814">
 
     <Grid>
         <Grid.RowDefinitions>
