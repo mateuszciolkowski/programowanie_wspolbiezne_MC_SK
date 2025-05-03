@@ -4,8 +4,8 @@ namespace Logic
 {
     public class BallLogic : IBallLogic
     {
-        public IBall CreateBall(double x, double y, double radius, double velocityX, double velocityY)
-                => new Ball(x, y, radius, velocityX, velocityY);
+        public IBall CreateBall(double x, double y, double radius, double velocityX, double velocityY, double mass)
+                => new Ball(x, y, radius, velocityX, velocityY, mass);
 
         public void Move(IBall ball, double timeToMove)
         {
@@ -17,49 +17,57 @@ namespace Logic
         {
             double radius = ball.Radius / 2;
 
-            // Odbicie od lewej i prawej krawędzi
             if (ball.X - radius <= 0 && ball.VelocityX < 0)
                 ball.VelocityX = -ball.VelocityX;
             else if (ball.X + radius >= width && ball.VelocityX > 0)
                 ball.VelocityX = -ball.VelocityX;
 
-            // Odbicie od góry i dołu
             if (ball.Y - radius <= 0 && ball.VelocityY < 0)
                 ball.VelocityY = -ball.VelocityY;
             else if (ball.Y + radius >= height && ball.VelocityY > 0)
                 ball.VelocityY = -ball.VelocityY;
         }
-        public void BounceBeetwenBalls(IBall ball1, IBall ball2)
+        public async Task BounceBeetwenBalls(IBall ball1, IBall ball2)
         {
+            // Przykład zastosowania asynchronicznego Task.Delay w celu zasymulowania długotrwałej operacji
+            await Task.Delay(100); // Symulacja opóźnienia
+
             double dx = ball2.X - ball1.X;
             double dy = ball2.Y - ball1.Y;
             double distance = Math.Sqrt(dx * dx + dy * dy);
-            double minDist = ball1.Radius / 2 + ball2.Radius / 2;
+            double minDist = (ball1.Radius + ball2.Radius) / 2;
 
             if (distance < minDist && distance > 0.01)
             {
-                // normalny wektor
+                // Odbicie pozycji: cofamy je na swoje miejsce sprzed kolizji
+                double overlap = minDist - distance;
                 double nx = dx / distance;
                 double ny = dy / distance;
 
-                // relatywna prędkość
-                double dvx = ball1.VelocityX - ball2.VelocityX;
-                double dvy = ball1.VelocityY - ball2.VelocityY;
+                // Proste cofnięcie – bez mas
+                ball1.X -= nx * overlap / 2;
+                ball1.Y -= ny * overlap / 2;
 
-                // ile z tej prędkości idzie wzdłuż normalnej
-                double impactSpeed = dvx * nx + dvy * ny;
+                ball2.X += nx * overlap / 2;
+                ball2.Y += ny * overlap / 2;
 
-                if (impactSpeed < 0) return; // kulki się oddalają
+                // Aktualizacja prędkości: zasada zachowania pędu w 1D (osobno dla X i Y)
+                double m1 = ball1.Mass;
+                double m2 = ball2.Mass;
 
-                // Odbicie sprężyste (dla kul o jednakowej masie)
-                double impulse = 2 * impactSpeed / 2; // masa 1 dla każdej kulki
+                double v1x = ball1.VelocityX;
+                double v2x = ball2.VelocityX;
 
-                ball1.VelocityX -= impulse * nx;
-                ball1.VelocityY -= impulse * ny;
+                double v1y = ball1.VelocityY;
+                double v2y = ball2.VelocityY;
 
-                ball2.VelocityX += impulse * nx;
-                ball2.VelocityY += impulse * ny;
+                ball1.VelocityX = (v1x * (m1 - m2) + 2 * m2 * v2x) / (m1 + m2);
+                ball2.VelocityX = (v2x * (m2 - m1) + 2 * m1 * v1x) / (m1 + m2);
+
+                ball1.VelocityY = (v1y * (m1 - m2) + 2 * m2 * v2y) / (m1 + m2);
+                ball2.VelocityY = (v2y * (m2 - m1) + 2 * m1 * v1y) / (m1 + m2);
             }
         }
     }
 }
+

@@ -1,7 +1,9 @@
 using Logic;
 using Data;
 using Xunit;
-namespace boardLogicTest
+using System.Threading.Tasks; // Dodajemy przestrzeñ nazw dla asynchronicznych metod
+
+namespace BoardLogicTest
 {
     public class BoardLogicTests
     {
@@ -26,7 +28,7 @@ namespace boardLogicTest
         {
             int initialCount = _board.Balls.Count;
 
-            _board.AddBall(10, 10, 5, 1, 1);
+            _board.AddBall(10, 10, 5, 1, 1, 0.1);
 
             Assert.Equal(initialCount + 1, _board.Balls.Count);
         }
@@ -34,7 +36,7 @@ namespace boardLogicTest
         [Fact]
         public void RemoveBall_ShouldDecreaseBallCount()
         {
-            _board.AddBall(10, 10, 5, 1, 1);
+            _board.AddBall(10, 10, 5, 1, 1, 0.1);
             int initialCount = _board.Balls.Count;
 
             _board.RemoveBall();
@@ -53,8 +55,8 @@ namespace boardLogicTest
         [Fact]
         public void ClearBalls_ShouldRemoveAllBalls()
         {
-            _board.AddBall(10, 10, 5, 1, 1);
-            _board.AddBall(20, 20, 5, -1, -1);
+            _board.AddBall(10, 10, 5, 1, 1, 0.1);
+            _board.AddBall(20, 20, 5, -1, -1, 0.1);
 
             _board.ClearBalls();
 
@@ -62,15 +64,15 @@ namespace boardLogicTest
         }
 
         [Fact]
-        public void MoveTheBalls_ShouldUpdateBallPositions()
+        public async Task MoveTheBalls_ShouldUpdateBallPositions() // Metoda asynchroniczna
         {
-            _board.AddBall(10, 10, 5, 2, 3);
+            _board.AddBall(10, 10, 5, 2, 3, 0.1);
             var initialBall = _board.Balls[0];
 
             double initialX = initialBall.X;
             double initialY = initialBall.Y;
 
-            _board.MoveTheBalls(1.0);
+            await _board.MoveTheBallsAsync(1.0); // Czekamy na zakoñczenie asynchronicznej metody
 
             Assert.NotEqual(initialX, initialBall.X);
             Assert.NotEqual(initialY, initialBall.Y);

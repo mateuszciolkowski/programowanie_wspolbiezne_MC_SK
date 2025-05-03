@@ -16,7 +16,7 @@ namespace LogicTests
         [Fact]
         public void CreateBall_ShouldReturnCorrectBall()
         {
-            var ball = _ballLogic.CreateBall(10, 20, 5, 2, 3);
+            var ball = _ballLogic.CreateBall(10, 20, 5, 2, 3, 0.1);
 
             Assert.Equal(5, ball.Radius);
             Assert.Equal(10 - 5, ball.X);
@@ -28,7 +28,7 @@ namespace LogicTests
         [Fact]
         public void Move_ShouldUpdateBallPosition()
         {
-            var ball = new Ball(0, 0, 5, 10, 20); 
+            var ball = new Ball(0, 0, 5, 10, 20, 0.1); 
             _ballLogic.Move(ball, 1.0);
 
             Assert.Equal(-5 + 10, ball.X); 
@@ -36,19 +36,19 @@ namespace LogicTests
         }
 
        
-        [InlineData(-1, 10, 5, 50, 50, true, false)]
-        [InlineData(48, 10, 5, 50, 50, true, false)] 
-        [InlineData(10, -1, 5, 50, 50, false, true)]
-        [InlineData(10, 48, 5, 50, 50, false, true)] 
-        [InlineData(10, 10, 5, 50, 50, false, false)] 
+        [InlineData(-1, 10, 5, 50, 50,1, true, false)]
+        [InlineData(48, 10, 5, 50, 50,1, true, false)] 
+        [InlineData(10, -1, 5, 50, 50,1, false, true)]
+        [InlineData(10, 48, 5, 50, 50, 1, false, true)] 
+        [InlineData(10, 10, 5, 50, 50, 1,  false, false)] 
         public void Bounce_ShouldReverseVelocityWhenOutOfBounds(
-             double x, double y, double radius, double width, double height,
+             double x, double y, double radius, double width, double height,double  mass,
                bool expectXReversed, bool expectYReversed)
         {
           
             var initialVelocityX = 3;
             var initialVelocityY = 4;
-            var ball = new Ball(x, y, radius, initialVelocityX, initialVelocityY);
+            var ball = new Ball(x, y, radius, initialVelocityX, initialVelocityY, mass);
 
            
             _ballLogic.Bounce(ball, width, height);

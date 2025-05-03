@@ -30,13 +30,13 @@ public class BoardModel : IBoardModel
         _boardLogic.ResizeBoard(width, height);
     }
 
-    public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
+    public void AddBall(double x, double y, double radius, double velocityX, double velocityY, double mass)
     {
         var ball = new BallModel(x, y, radius);
 
         Balls.Add(ball);
 
-        _boardLogic.AddBall(x, y, radius, velocityX, velocityY);
+        _boardLogic.AddBall(x, y, radius, velocityX, velocityY, mass);
     }
 
     public void RemoveBall()

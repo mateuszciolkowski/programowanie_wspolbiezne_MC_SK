@@ -7,5 +7,6 @@
         double Radius { get; set; }
         double VelocityX { get; set; }
         double VelocityY { get; set; }
+        double Mass { get; set; }
     }
 }

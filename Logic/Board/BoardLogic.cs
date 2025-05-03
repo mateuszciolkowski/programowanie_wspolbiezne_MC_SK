@@ -46,25 +46,21 @@ namespace Logic
             _timer.Start();
         }
 
-        // Funkcja wywoływana przez Timer co 16ms
-
-        private void TimerElapsed(object sender, ElapsedEventArgs e)
-         {
-
-        MoveTheBalls(_interval / 1000.0);
-
-        BallsMoved?.Invoke();
+        private async void TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            await MoveTheBallsAsync(_interval / 1000.0);
+            BallsMoved?.Invoke();
         }
 
-    public void ResizeBoard(double width, double height)
+        public void ResizeBoard(double width, double height)
         {
             Width = width;
             Height = height;
         }
 
-        public void AddBall(double x, double y, double radius, double velocityX, double velocityY)
+        public void AddBall(double x, double y, double radius, double velocityX, double velocityY,double mass)
         {
-            var ball = _ballLogic.CreateBall(x, y, radius, velocityX, velocityY);
+            var ball = _ballLogic.CreateBall(x, y, radius, velocityX, velocityY,mass);
             lock (_ballLock)
             {
                 _balls.Add(ball);
@@ -90,30 +86,44 @@ namespace Logic
             }
         }
 
-        public void MoveTheBalls(double timeToMove)
+        public async Task MoveTheBallsAsync(double timeToMove)
         {
             List<IBall> snapshot;
             lock (_ballLock)
             {
                 snapshot = new List<IBall>(_balls);
             }
-            Parallel.ForEach(snapshot, ball =>
+
+            await Task.Run(() =>
             {
-                _ballLogic.Move(ball, timeToMove);
-                _ballLogic.Bounce(ball, Width, Height);
+                Parallel.ForEach(snapshot, ball =>
+                {
+                    _ballLogic.Move(ball, timeToMove);
+                    _ballLogic.Bounce(ball, Width, Height);
+                });
             });
 
             int count = snapshot.Count;
+            var collisionTasks = new List<Task>();
+
             for (int i = 0; i < count; i++)
             {
                 for (int j = i + 1; j < count; j++)
                 {
-                    lock (_ballLock)
+                    var ball1 = snapshot[i];
+                    var ball2 = snapshot[j];
+
+                    collisionTasks.Add(Task.Run(() =>
                     {
-                        _ballLogic.BounceBeetwenBalls(snapshot[i], snapshot[j]);
-                    }
+                        lock (_ballLock)
+                        {
+                            _ballLogic.BounceBeetwenBalls(ball1, ball2);
+                        }
+                    }));
                 }
             }
+
+            await Task.WhenAll(collisionTasks);
         }
 
         public List<IBall> GetBalls()

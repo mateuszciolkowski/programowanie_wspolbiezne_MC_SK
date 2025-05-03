@@ -9,7 +9,7 @@ namespace Model
         ObservableCollection<BallModel> Balls { get; set; }
 
         void ResizeBoard(double width, double height);
-        void AddBall(double x, double y, double radius, double velocityX, double velocityY);
+        void AddBall(double x, double y, double radius, double velocityX, double velocityY, double mass);
         void RemoveBall();
         void ClearBalls();
 
