@@ -1,79 +1,60 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Logic;
+using Data;
 
-public class BallModel : INotifyPropertyChanged
+namespace Model
 {
-    private double _x;
-    private double _y;
-    private double _radius;
-    private double _velocityX;
-    private double _velocityY;
-
-    public BallModel(double x, double y, double radius)
+    public class BallModel : INotifyPropertyChanged
     {
-        _x = x;
-        _y = y;
-        _radius = radius;
-    }
+        private double _x;
+        private double _y;
+        private double _radius;
 
-    public double X
-    {
-        get => _x;
-        set
+        public BallModel(double x, double y, double radius)
         {
-            if (_x != value)
+            _x = x;
+            _y = y;
+            _radius = radius;
+        }
+
+        public double X => _x;
+        public double Y => _y;
+        public double Radius
+        {
+            get => _radius;
+            set
             {
-                _x = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(XDisplay));
+                if (_radius != value)
+                {
+                    _radius = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(XDisplay));
+                    OnPropertyChanged(nameof(YDisplay));
+                }
             }
         }
-    }
 
-    public double Y
-    {
-        get => _y;
-        set
-        {
-            if (_y != value)
-            {
-                _y = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(YDisplay));
-            }
-        }
-    }
+        public double XDisplay => _x - _radius / 2;
+        public double YDisplay => _y - _radius / 2;
 
-    public double Radius
-    {
-        get => _radius;
-        set
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void UpdatePosition(double newX, double newY)
         {
-            if (_radius != value)
+            bool changed = false;
+            if (!newX.Equals(_x)) { _x = newX; OnPropertyChanged(nameof(X)); changed = true; }
+            if (!newY.Equals(_y)) { _y = newY; OnPropertyChanged(nameof(Y)); changed = true; }
+            if (changed)
             {
-                _radius = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(XDisplay));
                 OnPropertyChanged(nameof(YDisplay));
             }
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-    public double VelocityX
-    {
-        get => _velocityX;
-        set => _velocityX = value;
-    }
-
-    public double VelocityY
-    {
-        get => _velocityY;
-        set => _velocityY = value;
-    }
-
-    public double XDisplay => X - Radius / 2;
-    public double YDisplay => Y - Radius / 2;
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

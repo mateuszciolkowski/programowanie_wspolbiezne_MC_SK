@@ -12,7 +12,6 @@ namespace Model
         void AddBall(double x, double y, double radius, double velocityX, double velocityY, double mass);
         void RemoveBall();
         void ClearBalls();
-
         // Dodajemy event do interfejsu
         event Action BallsMovedEvent;
     }
