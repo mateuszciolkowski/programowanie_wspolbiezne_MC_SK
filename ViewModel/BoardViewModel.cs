@@ -110,7 +110,7 @@ public class BoardViewModel : INotifyPropertyChanged
         double radius = 50 + random.NextDouble() * 50; 
         double velocityX = random.NextDouble() * 250 - 50;
         double velocityY = random.NextDouble() * 250 - 50;
-        double mass = radius * 3;
+        double mass = radius * 30;
 
         _boardModel.AddBall(x, y, radius, velocityX, velocityY, mass);
     }

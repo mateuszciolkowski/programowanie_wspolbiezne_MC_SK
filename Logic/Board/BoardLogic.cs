@@ -102,7 +102,7 @@ namespace Logic
             {
                 for (int j = i + 1; j < count; j++)
                 {
-                    _ballLogic.BounceBeetwenBalls(snapshot[i], snapshot[j]);
+                    _ballLogic.BounceBetweenBalls(snapshot[i], snapshot[j]);
                 }
             }
         }

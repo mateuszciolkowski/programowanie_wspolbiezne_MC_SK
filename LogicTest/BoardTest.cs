@@ -1,17 +1,25 @@
 using Logic;
 using Data;
 using Xunit;
-using System.Threading.Tasks; // Dodajemy przestrzeñ nazw dla asynchronicznych metod
+using System.Threading.Tasks;
+using System;
+using System.Threading;
+using System.Linq;
 
 namespace BoardLogicTest
 {
-    public class BoardLogicTests
+    public class BoardLogicTests : IDisposable
     {
         private readonly BoardLogic _board;
 
         public BoardLogicTests()
         {
             _board = new BoardLogic(100, 100);
+        }
+
+        public void Dispose()
+        {
+            _board.Dispose(); // wy³¹cz timer po teœcie
         }
 
         [Fact]
@@ -64,18 +72,31 @@ namespace BoardLogicTest
         }
 
         [Fact]
-        public async Task MoveTheBalls_ShouldUpdateBallPositions() // Metoda asynchroniczna
+        public async Task MoveTheBalls_ShouldUpdateBallPositions()
         {
             _board.AddBall(10, 10, 5, 2, 3, 0.1);
-            var initialBall = _board.Balls[0];
+            var initial = _board.Balls.First();
 
-            double initialX = initialBall.X;
-            double initialY = initialBall.Y;
+            double x0 = initial.X;
+            double y0 = initial.Y;
 
-            await _board.MoveTheBallsAsync(1.0); // Czekamy na zakoñczenie asynchronicznej metody
+            var tcs = new TaskCompletionSource();
 
-            Assert.NotEqual(initialX, initialBall.X);
-            Assert.NotEqual(initialY, initialBall.Y);
+            void Handler()
+            {
+                tcs.TrySetResult();
+            }
+
+            _board.BallsMoved += Handler;
+
+            // Czekaj maksymalnie 500ms na zdarzenie
+            await Task.WhenAny(tcs.Task, Task.Delay(500));
+            _board.BallsMoved -= Handler;
+
+            var updated = _board.Balls.First();
+
+            Assert.NotEqual(x0, updated.X);
+            Assert.NotEqual(y0, updated.Y);
         }
 
         [Fact]
