@@ -107,7 +107,7 @@ public class BoardViewModel : INotifyPropertyChanged
     {
         double x = 100 + random.NextDouble() * 500;
         double y = 100 + random.NextDouble() * 500;
-        double radius = 50 + random.NextDouble() * 50; // zamiast (0-50) + 50
+        double radius = 50 + random.NextDouble() * 50; 
         double velocityX = random.NextDouble() * 250 - 50;
         double velocityY = random.NextDouble() * 250 - 50;
         double mass = radius * 3;

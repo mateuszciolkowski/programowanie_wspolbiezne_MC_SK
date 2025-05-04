@@ -15,6 +15,8 @@ namespace Logic
         public void ClearBalls();
         //void MoveTheBalls(double timeToMove);
         List<IBall> GetBalls();
+        Task<List<IBall>> GetBallsAsync();
+
 
     }
 }

@@ -16,7 +16,8 @@ namespace Logic
         private readonly object _ballLock = new object();
         private readonly IBallLogic _ballLogic;
         private readonly System.Timers.Timer _timer;
-        private readonly double _intervalMs = 16; // ~60 FPS
+        private readonly double _intervalMs = 1; // ~60 FPS
+        //private readonly ReaderWriterLockSlim _ballLock = new();
 
         public event Action BallsMoved;
 
@@ -90,14 +91,12 @@ namespace Logic
                 snapshot = _balls.ToList();
             }
 
-            // Move and bounce walls
             foreach (var ball in snapshot)
             {
                 _ballLogic.Move(ball, deltaTime);
                 _ballLogic.Bounce(ball, Width, Height);
             }
 
-            // Ball-to-ball collisions, synchronous without locks inside
             int count = snapshot.Count;
             for (int i = 0; i < count; i++)
             {
@@ -115,6 +114,13 @@ namespace Logic
                 return _balls.ToList();
             }
         }
+
+        public async Task<List<IBall>> GetBallsAsync()
+        {
+            // Simulacja operacji asynchronicznej, np. pobieranie z bazy danych, API itp.
+            return await Task.FromResult(new List<IBall>(_balls));
+        }
+
 
         public void Dispose()
         {

@@ -1,6 +1,7 @@
 ﻿using Logic;
 using Model;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 public class BoardModel : IBoardModel
 {
@@ -12,7 +13,7 @@ public class BoardModel : IBoardModel
     public event Action BallsMovedEvent;
 
     private int _tickCounter;
-    private const int TicksPerUpdate = 2; // ~30 FPS
+    private const int TicksPerUpdate = 5;
 
     public BoardModel(double width, double height)
     {
@@ -20,7 +21,7 @@ public class BoardModel : IBoardModel
         Height = height;
         _boardLogic = new BoardLogic(width, height);
         Balls = new ObservableCollection<BallModel>();
-        _boardLogic.BallsMoved += OnBallsMoved;
+        _boardLogic.BallsMoved += async () => await OnBallsMovedAsync();
     }
 
     public void ResizeBoard(double width, double height)
@@ -43,7 +44,7 @@ public class BoardModel : IBoardModel
             Balls.RemoveAt(Balls.Count - 1);
         _boardLogic.RemoveBall();
     }
-    
+
     public void ClearBalls()
     {
         Balls.Clear();
@@ -51,18 +52,23 @@ public class BoardModel : IBoardModel
         _tickCounter = 0;
     }
 
-    private void OnBallsMoved()
+    private async Task OnBallsMovedAsync()
     {
+        // Zwiększamy licznik ticków
         if (++_tickCounter % TicksPerUpdate != 0)
             return;
 
-        var snapshot = _boardLogic.GetBalls();
+        // Zrób kopię stanu kul w logice
+        var snapshot = await _boardLogic.GetBallsAsync(); // Załóżmy, że metoda GetBallsAsync() jest asynchroniczna
         int count = Math.Min(snapshot.Count, Balls.Count);
+
+        // Uaktualnij pozycje kulek
         for (int i = 0; i < count; i++)
         {
             Balls[i].UpdatePosition(snapshot[i].X, snapshot[i].Y);
         }
+
+        // Powiadom interfejs o zmianach
         BallsMovedEvent?.Invoke();
     }
 }
-

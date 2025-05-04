@@ -1,5 +1,6 @@
 ﻿namespace Logic
 {
+    using System.Diagnostics;
     using Data;
     public class BallLogic : IBallLogic
     {
@@ -46,6 +47,8 @@
             ball2.VelocityX = (v2x * (m2 - m1) + 2 * m1 * v1x) / (m1 + m2);
             ball1.VelocityY = (v1y * (m1 - m2) + 2 * m2 * v2y) / (m1 + m2);
             ball2.VelocityY = (v2y * (m2 - m1) + 2 * m1 * v1y) / (m1 + m2);
+            //Debug.WriteLine($"Ball updated on thread: {Thread.CurrentThread.ManagedThreadId}");
+
         }
     }
 }
