@@ -27,56 +27,43 @@
             double dx = ball2.X - ball1.X;
             double dy = ball2.Y - ball1.Y;
             double distance = Math.Sqrt(dx * dx + dy * dy);
-            double minDist = ball1.Radius + ball2.Radius;
+            double minDist = (ball1.Radius + ball2.Radius) / 2;
 
-            // Kolizja tylko gdy odległość < suma promieni
-            if (distance == 0 || distance >= minDist)
-                return;
 
-            // Normalizacja wektora (n)
-            double nx = dx / distance;
-            double ny = dy / distance;
+            if (distance < minDist && distance > 0.01)
+            {
+                // Odbicie pozycji: cofamy je na swoje miejsce sprzed kolizji
+                double overlap = minDist - distance;
+                double nx = dx / distance;
+                double ny = dy / distance;
 
-            // Wektory prędkości
-            double v1x = ball1.VelocityX;
-            double v1y = ball1.VelocityY;
-            double v2x = ball2.VelocityX;
-            double v2y = ball2.VelocityY;
+                // Proste cofnięcie – bez mas
+                ball1.X -= nx * overlap / 2;
+                ball1.Y -= ny * overlap / 2;
 
-            // Skalarne rzutowanie prędkości na normalny wektor (n)
-            double v1n = v1x * nx + v1y * ny;
-            double v2n = v2x * nx + v2y * ny;
+                ball2.X += nx * overlap / 2;
+                ball2.Y += ny * overlap / 2;
 
-            // Jeśli kulki się oddalają, nie odbijamy
-            if (v1n - v2n <= 0)
-                return;
+                // Aktualizacja prędkości: zasada zachowania pędu w 1D (osobno dla X i Y)
+                double m1 = ball1.Mass;
+                double m2 = ball2.Mass;
 
-            double m1 = ball1.Mass;
-            double m2 = ball2.Mass;
 
-            // Nowe prędkości wzdłuż normalnej (1D elastic collision)
-            double v1nAfter = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
-            double v2nAfter = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
+                double v1x = ball1.VelocityX;
+                double v2x = ball2.VelocityX;
 
-            // Zmiana prędkości tylko wzdłuż normalnej
-            double dv1n = v1nAfter - v1n;
-            double dv2n = v2nAfter - v2n;
 
-            ball1.VelocityX += dv1n * nx;
-            ball1.VelocityY += dv1n * ny;
-            ball2.VelocityX += dv2n * nx;
-            ball2.VelocityY += dv2n * ny;
+                double v1y = ball1.VelocityY;
+                double v2y = ball2.VelocityY;
 
-            // Korekta pozycji żeby uniknąć nakładania się kul
-            double overlap = minDist - distance;
-            double correction = overlap / 2;
+                ball1.VelocityX = (v1x * (m1 - m2) + 2 * m2 * v2x) / (m1 + m2);
+                ball2.VelocityX = (v2x * (m2 - m1) + 2 * m1 * v1x) / (m1 + m2);
 
-            ball1.X -= correction * nx;
-            ball1.Y -= correction * ny;
-            ball2.X += correction * nx;
-            ball2.Y += correction * ny;
+                ball1.VelocityY = (v1y * (m1 - m2) + 2 * m2 * v2y) / (m1 + m2);
+                ball2.VelocityY = (v2y * (m2 - m1) + 2 * m1 * v1y) / (m1 + m2);
+            }
         }
+    }
 
 
     }
-}
