@@ -32,12 +32,12 @@ namespace Logic
             }
         }
 
-        public BoardLogic(double width, double height)
+        public BoardLogic(double width, double height, BallLogic ballLogic)
         {
             Width = width;
             Height = height;
-            _ballLogic = new BallLogic();
-
+            //_ballLogic = new BallLogic();
+            _ballLogic = ballLogic;
             _timer = new System.Timers.Timer(_intervalMs);
             _timer.Elapsed += OnTimerElapsed;
             _timer.AutoReset = true;

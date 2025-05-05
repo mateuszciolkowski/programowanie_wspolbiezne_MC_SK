@@ -19,7 +19,8 @@ public class BoardModel : IBoardModel
     {
         Width = width;
         Height = height;
-        _boardLogic = new BoardLogic(width, height);
+        var ballLogic = new BallLogic();
+        _boardLogic = new BoardLogic(width, height,ballLogic);
         Balls = new ObservableCollection<BallModel>();
         _boardLogic.BallsMoved += async () => await OnBallsMovedAsync();
     }

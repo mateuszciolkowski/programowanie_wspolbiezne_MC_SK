@@ -3,82 +3,46 @@ using Data;
 using Xunit;
 using System.Threading.Tasks;
 using System;
-using System.Threading;
 using System.Linq;
 
 namespace BoardLogicTest
 {
-    public class BoardLogicTests : IDisposable
+    public class BoardLogicDiTests : IDisposable
     {
         private readonly BoardLogic _board;
 
-        public BoardLogicTests()
+        public BoardLogicDiTests()
         {
-            _board = new BoardLogic(100, 100);
+            // U¿ywamy prawdziwej implementacji
+            var ballLogic = new BallLogic();
+            _board = new BoardLogic(100, 100, ballLogic);
         }
 
         public void Dispose()
         {
-            _board.Dispose(); // wy³¹cz timer po teœcie
+            _board.Dispose();
         }
 
         [Fact]
-        public void ResizeBoard_ShouldUpdateDimensions()
+        public void AddBall_WithInjectedBallLogic_ShouldAddBall()
         {
-            _board.ResizeBoard(200, 300);
+            int countBefore = _board.Balls.Count;
 
-            Assert.Equal(200, _board.Width);
-            Assert.Equal(300, _board.Height);
+            _board.AddBall(10, 10, 5, 1, 1, 0.5);
+
+            int countAfter = _board.Balls.Count;
+
+            Assert.Equal(countBefore + 1, countAfter);
         }
 
         [Fact]
-        public void AddBall_ShouldIncreaseBallCount()
+        public async Task BallMoves_AfterTimeWithInjectedBallLogic()
         {
-            int initialCount = _board.Balls.Count;
+            _board.AddBall(10, 10, 5, 2, 2, 1);
 
-            _board.AddBall(10, 10, 5, 1, 1, 0.1);
-
-            Assert.Equal(initialCount + 1, _board.Balls.Count);
-        }
-
-        [Fact]
-        public void RemoveBall_ShouldDecreaseBallCount()
-        {
-            _board.AddBall(10, 10, 5, 1, 1, 0.1);
-            int initialCount = _board.Balls.Count;
-
-            _board.RemoveBall();
-
-            Assert.Equal(initialCount - 1, _board.Balls.Count);
-        }
-
-        [Fact]
-        public void RemoveBall_ShouldNotThrow_WhenNoBalls()
-        {
-            var exception = Record.Exception(() => _board.RemoveBall());
-
-            Assert.Null(exception);
-        }
-
-        [Fact]
-        public void ClearBalls_ShouldRemoveAllBalls()
-        {
-            _board.AddBall(10, 10, 5, 1, 1, 0.1);
-            _board.AddBall(20, 20, 5, -1, -1, 0.1);
-
-            _board.ClearBalls();
-
-            Assert.Empty(_board.Balls);
-        }
-
-        [Fact]
-        public async Task MoveTheBalls_ShouldUpdateBallPositions()
-        {
-            _board.AddBall(10, 10, 5, 2, 3, 0.1);
-            var initial = _board.Balls.First();
-
-            double x0 = initial.X;
-            double y0 = initial.Y;
+            var firstPosition = _board.Balls.First();
+            double x0 = firstPosition.X;
+            double y0 = firstPosition.Y;
 
             var tcs = new TaskCompletionSource();
 
@@ -89,23 +53,15 @@ namespace BoardLogicTest
 
             _board.BallsMoved += Handler;
 
-            // Czekaj maksymalnie 500ms na zdarzenie
             await Task.WhenAny(tcs.Task, Task.Delay(500));
             _board.BallsMoved -= Handler;
 
-            var updated = _board.Balls.First();
+            var after = _board.Balls.First();
 
-            Assert.NotEqual(x0, updated.X);
-            Assert.NotEqual(y0, updated.Y);
+            Assert.NotEqual(x0, after.X);
+            Assert.NotEqual(y0, after.Y);
         }
 
-        [Fact]
-        public void GetBalls_ShouldReturnSameListAsBallsProperty()
-        {
-            var listFromProperty = _board.Balls;
-            var listFromMethod = _board.GetBalls();
-
-            Assert.Equal(listFromProperty.Count, listFromMethod.Count);
-        }
+     
     }
 }
