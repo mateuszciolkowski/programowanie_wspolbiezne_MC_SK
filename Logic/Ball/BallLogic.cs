@@ -9,8 +9,7 @@
 
         public void Move(IBall ball, double timeToMove)
         {
-            ball.X += ball.VelocityX * timeToMove;
-            ball.Y += ball.VelocityY * timeToMove;
+            ball.Move(timeToMove);
         }
 
         public void Bounce(IBall ball, double width, double height)

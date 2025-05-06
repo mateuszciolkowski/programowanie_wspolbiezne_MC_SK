@@ -19,5 +19,12 @@
         public double VelocityY { get; set; }
         public double Mass { get; set; }
 
+
+        public void Move(double timeToMove)
+        {
+            this.X += this.VelocityX * timeToMove;
+            this.Y += this.VelocityY * timeToMove;
+
+        }
     }
 }

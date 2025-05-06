@@ -1,7 +1,6 @@
 ﻿using Logic;
 using Model;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 public class BoardModel : IBoardModel
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Timers;
+﻿using System.Timers;
 using Data;
 
 namespace Logic
@@ -16,8 +12,8 @@ namespace Logic
         private readonly object _ballLock = new object();
         private readonly IBallLogic _ballLogic;
         private readonly System.Timers.Timer _timer;
-        private readonly double _intervalMs = 1; // ~60 FPS
-        //private readonly ReaderWriterLockSlim _ballLock = new();
+        private readonly double _intervalMs = 1;
+        private readonly Dictionary<IBall, CancellationTokenSource> _ballTasks = new();
 
         public event Action BallsMoved;
 
@@ -60,18 +56,53 @@ namespace Logic
         public void AddBall(double x, double y, double radius, double velocityX, double velocityY, double mass)
         {
             var ball = _ballLogic.CreateBall(x, y, radius, velocityX, velocityY, mass);
+            var cts = new CancellationTokenSource();
+
+            int ballIndex;
             lock (_ballLock)
             {
                 _balls.Add(ball);
+                _ballTasks[ball] = cts;
+                ballIndex = _balls.Count - 1;
             }
+
+            Task.Run(async () =>
+            {
+               
+                Thread.CurrentThread.Name = $"BallThread_{ballIndex}_{Guid.NewGuid()}";
+                
+
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    lock (_ballLock)
+                    {
+                        _ballLogic.Move(ball, _intervalMs / 1000.0);
+                        _ballLogic.Bounce(ball, Width, Height);
+                    }
+
+                    BallsMoved?.Invoke();
+                    await Task.Delay((int)_intervalMs, cts.Token);
+                }
+
+            }, cts.Token);
         }
+
 
         public void RemoveBall()
         {
             lock (_ballLock)
             {
                 if (_balls.Count > 0)
+                {
+                    var ball = _balls[^1];
                     _balls.RemoveAt(_balls.Count - 1);
+                    if (_ballTasks.TryGetValue(ball, out var cts))
+                    {
+                        cts.Cancel();
+                        _ballTasks.Remove(ball);
+                    }
+                }
             }
         }
 
@@ -79,23 +110,29 @@ namespace Logic
         {
             lock (_ballLock)
             {
+                foreach (var cts in _ballTasks.Values)
+                {
+                    cts.Cancel();
+                }
+
+                _ballTasks.Clear();
                 _balls.Clear();
             }
         }
 
         private void UpdateBalls(double deltaTime)
         {
+
             List<IBall> snapshot;
             lock (_ballLock)
             {
                 snapshot = _balls.ToList();
             }
-
-            foreach (var ball in snapshot)
-            {
-                _ballLogic.Move(ball, deltaTime);
-                _ballLogic.Bounce(ball, Width, Height);
-            }
+            //foreach (var ball in snapshot)
+            //{
+            //    _ballLogic.Move(ball, deltaTime);
+            //    _ballLogic.Bounce(ball, Width, Height);
+            //}
 
             int count = snapshot.Count;
             for (int i = 0; i < count; i++)

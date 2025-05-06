@@ -8,5 +8,7 @@
         double VelocityX { get; set; }
         double VelocityY { get; set; }
         double Mass { get; set; }
+
+        void Move(double timeToMove);
     }
 }
