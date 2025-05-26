@@ -63,6 +63,10 @@
 
                 ball2.VelocityX = v2tX + newV2n * nx;
                 ball2.VelocityY = v2tY + newV2n * ny;
+
+                Data.CollisionLogger.Log($"Kolizja kul: Ball1 (X={ball1.X:F2}, Y={ball1.Y:F2}, Vx={ball1.VelocityX:F2}, Vy={ball1.VelocityY:F2}), " +
+                               $"Ball2 (X={ball2.X:F2}, Y={ball2.Y:F2}, Vx={ball2.VelocityX:F2}, Vy={ball2.VelocityY:F2})");
+
             }
         }
 
