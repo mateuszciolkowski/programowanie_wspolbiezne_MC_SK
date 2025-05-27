@@ -15,9 +15,11 @@
         public double X { get; set; }
         public double Y { get; set; }
         public double Radius { get; set; }
-        public double VelocityX { get;  set; }
-        public double VelocityY { get;  set; }
+        public double VelocityX { get;  private set; }
+        public double VelocityY { get;  private set; }
         public double Mass { get; set; }
+
+        private readonly object _ballLock = new object();
 
 
         public void Move(double timeToMove)
@@ -26,5 +28,14 @@
             this.Y += this.VelocityY * timeToMove;
 
         }
+        public void SetVelocity(double vx, double vy)
+        {
+            lock (_ballLock)
+            {
+                VelocityX = vx;
+                VelocityY = vy;
+            }
+        }
+
     }
 }

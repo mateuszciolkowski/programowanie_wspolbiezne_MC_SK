@@ -14,8 +14,8 @@ namespace DataTests
             ball.X = 15.0;
             ball.Y = 25.0;
             ball.Radius = 10.0;
-            ball.VelocityX = 5.0;
-            ball.VelocityY = -5.0;
+            ball.SetVelocity(5, -5);
+            
 
 
             Assert.Equal(15.0, ball.X);

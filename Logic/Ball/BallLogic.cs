@@ -15,11 +15,19 @@
         public void Bounce(IBall ball, double width, double height)
         {
             double radius = ball.Radius / 2;
-            if (ball.X - radius <= 0 && ball.VelocityX < 0 || ball.X + radius >= width && ball.VelocityX > 0)
-                ball.VelocityX = -ball.VelocityX;
-            if (ball.Y - radius <= 0 && ball.VelocityY < 0 || ball.Y + radius >= height && ball.VelocityY > 0)
-                ball.VelocityY = -ball.VelocityY;
+            double newVx = ball.VelocityX;
+            double newVy = ball.VelocityY;
+
+            if ((ball.X - radius <= 0 && ball.VelocityX < 0) || (ball.X + radius >= width && ball.VelocityX > 0))
+                newVx = -ball.VelocityX;
+
+            if ((ball.Y - radius <= 0 && ball.VelocityY < 0) || (ball.Y + radius >= height && ball.VelocityY > 0))
+                newVy = -ball.VelocityY;
+
+            if (newVx != ball.VelocityX || newVy != ball.VelocityY)
+                ball.SetVelocity(newVx, newVy);
         }
+
         public void BounceBetweenBalls(IBall ball1, IBall ball2)
         {
             double dx = ball2.X - ball1.X;
@@ -57,12 +65,13 @@
                 double newV1n = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
                 double newV2n = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
 
-                // Łączenie składowych z powrotem
-                ball1.VelocityX = v1tX + newV1n * nx;
-                ball1.VelocityY = v1tY + newV1n * ny;
+                double newVx1 = v1tX + newV1n * nx;
+                double newVy1 = v1tY + newV1n * ny;
+                ball1.SetVelocity(newVx1, newVy1);
 
-                ball2.VelocityX = v2tX + newV2n * nx;
-                ball2.VelocityY = v2tY + newV2n * ny;
+                double newVx2 = v2tX + newV2n * nx;
+                double newVy2 = v2tY + newV2n * ny;
+                ball2.SetVelocity(newVx2, newVy2);
 
                 Data.CollisionLogger.Log($"Kolizja kul: Ball1 (X={ball1.X:F2}, Y={ball1.Y:F2}, Vx={ball1.VelocityX:F2}, Vy={ball1.VelocityY:F2}), " +
                                $"Ball2 (X={ball2.X:F2}, Y={ball2.Y:F2}, Vx={ball2.VelocityX:F2}, Vy={ball2.VelocityY:F2})");
