@@ -127,19 +127,14 @@ namespace Logic
             lock (_ballLock)
             {
                 snapshot = _balls.ToList();
-            }
-            //foreach (var ball in snapshot)
-            //{
-            //    _ballLogic.Move(ball, deltaTime);
-            //    _ballLogic.Bounce(ball, Width, Height);
-            //}
 
             int count = snapshot.Count;
-            for (int i = 0; i < count; i++)
-            {
-                for (int j = i + 1; j < count; j++)
+                for (int i = 0; i < count; i++)
                 {
-                    _ballLogic.BounceBetweenBalls(snapshot[i], snapshot[j]);
+                    for (int j = i + 1; j < count; j++)
+                    {
+                        _ballLogic.BounceBetweenBalls(snapshot[i], snapshot[j]);
+                    }
                 }
             }
         }
@@ -154,7 +149,6 @@ namespace Logic
 
         public async Task<List<IBall>> GetBallsAsync()
         {
-            // Simulacja operacji asynchronicznej, np. pobieranie z bazy danych, API itp.
             return await Task.FromResult(new List<IBall>(_balls));
         }
 

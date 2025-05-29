@@ -54,21 +54,17 @@ public class BoardModel : IBoardModel
 
     private async Task OnBallsMovedAsync()
     {
-        // Zwiększamy licznik ticków
         if (++_tickCounter % TicksPerUpdate != 0)
             return;
 
-        // Zrób kopię stanu kul w logice
-        var snapshot = await _boardLogic.GetBallsAsync(); // Załóżmy, że metoda GetBallsAsync() jest asynchroniczna
+        var snapshot = await _boardLogic.GetBallsAsync(); 
         int count = Math.Min(snapshot.Count, Balls.Count);
 
-        // Uaktualnij pozycje kulek
         for (int i = 0; i < count; i++)
         {
             Balls[i].UpdatePosition(snapshot[i].X, snapshot[i].Y);
         }
 
-        // Powiadom interfejs o zmianach
         BallsMovedEvent?.Invoke();
     }
 }
