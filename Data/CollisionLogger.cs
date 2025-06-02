@@ -19,10 +19,9 @@ namespace Data
 
         static CollisionLogger()
         {
-            // Otwieramy plik do dopisywania (raz)
             streamWriter = new StreamWriter(logFilePath, append: true)
             {
-                AutoFlush = false // kontrolujemy flush ręcznie
+                AutoFlush = false 
             };
 
             Task.Run(() => ProcessLogQueue());
@@ -47,21 +46,18 @@ namespace Data
                 {
                     buffer.Add(logEntry);
 
-                    // Jeśli bufor jest duży, od razu zapisz do pliku
                     if (buffer.Count >= 100)
                     {
                         FlushBuffer(buffer);
                     }
                 }
 
-                // Po odczekaniu czasu zapisz co jest w buforze
                 if (buffer.Count > 0)
                 {
                     FlushBuffer(buffer);
                 }
             }
 
-            // Na koniec wypisz pozostałości przed zakończeniem
             if (buffer.Count > 0)
             {
                 FlushBuffer(buffer);

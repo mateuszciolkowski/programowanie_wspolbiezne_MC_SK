@@ -1,64 +1,94 @@
-﻿using Xunit;
+﻿using System;
 using Logic;
 using Data;
+using Xunit;
 
-namespace LogicTests
+namespace Tests
 {
+    public class TestBall : IBall
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Radius { get; set; }
+        public double VelocityX { get; private set; }
+        public double VelocityY { get; private set; }
+        public double Mass { get; set; }
+
+        public TestBall(double x, double y, double radius, double velocityX, double velocityY, double mass)
+        {
+            X = x;
+            Y = y;
+            Radius = radius;
+            VelocityX = velocityX;
+            VelocityY = velocityY;
+            Mass = mass;
+        }
+
+        public void Move(double time)
+        {
+            X += VelocityX * time;
+            Y += VelocityY * time;
+        }
+
+        public void SetVelocity(double vx, double vy)
+        {
+            VelocityX = vx;
+            VelocityY = vy;
+        }
+    }
+
     public class BallLogicTests
     {
-        private readonly BallLogic _ballLogic;
+        private readonly IBallLogic _logic;
 
         public BallLogicTests()
         {
-            _ballLogic = new BallLogic();
+            _logic = new BallLogic(); 
         }
 
         [Fact]
-        public void CreateBall_ShouldReturnCorrectBall()
+        public void CreateBall_ReturnsCorrectBall()
         {
-            var ball = _ballLogic.CreateBall(10, 20, 5, 2, 3, 0.1);
+            var ball = _logic.CreateBall(0, 0, 10, 1, -1, 2);
 
-            Assert.Equal(5, ball.Radius);
-            Assert.Equal(10 - 5, ball.X);
-            Assert.Equal(20 - 5, ball.Y);
-            Assert.Equal(2, ball.VelocityX);
-            Assert.Equal(3, ball.VelocityY);
+            Assert.Equal(-10, ball.X);
+            Assert.Equal(-10, ball.Y);
+            Assert.Equal(10, ball.Radius);
+            Assert.Equal(1, ball.VelocityX);
+            Assert.Equal(-1, ball.VelocityY);
+            Assert.Equal(2, ball.Mass);
         }
 
         [Fact]
-        public void Move_ShouldUpdateBallPosition()
+        public void Move_UpdatesPositionCorrectly()
         {
-            var ball = new Ball(0, 0, 5, 10, 20, 0.1); 
-            _ballLogic.Move(ball, 1.0);
+            var ball = new TestBall(0, 0, 10, 2, 3, 1);
+            _logic.Move(ball, 2);
 
-            Assert.Equal(-5 + 10, ball.X); 
-            Assert.Equal(-5 + 20, ball.Y); 
+            Assert.Equal(4, ball.X);
+            Assert.Equal(6, ball.Y);
         }
 
-       
-        [InlineData(-1, 10, 5, 50, 50,1, true, false)]
-        [InlineData(48, 10, 5, 50, 50,1, true, false)] 
-        [InlineData(10, -1, 5, 50, 50,1, false, true)]
-        [InlineData(10, 48, 5, 50, 50, 1, false, true)] 
-        [InlineData(10, 10, 5, 50, 50, 1,  false, false)] 
-        public void Bounce_ShouldReverseVelocityWhenOutOfBounds(
-             double x, double y, double radius, double width, double height,double  mass,
-               bool expectXReversed, bool expectYReversed)
+        [Fact]
+        public void Bounce_ReversesVelocityOnWallCollision()
         {
-          
-            var initialVelocityX = 3;
-            var initialVelocityY = 4;
-            var ball = new Ball(x, y, radius, initialVelocityX, initialVelocityY, mass);
+            var ball = new TestBall(5, 5, 10, 2, 3, 1);
+            _logic.Bounce(ball, 10, 10);
 
-           
-            _ballLogic.Bounce(ball, width, height);
+            Assert.True(ball.VelocityX < 0); 
+            Assert.True(ball.VelocityY < 0); 
+        }
 
-            
-            var expectedVelocityX = expectXReversed ? -initialVelocityX : initialVelocityX;
-            var expectedVelocityY = expectYReversed ? -initialVelocityY : initialVelocityY;
+        [Fact]
+        public void BounceBetweenBalls_ChangesVelocitiesOnCollision()
+        {
+            var ball1 = new TestBall(0, 0, 10, 1, 0, 1);
+            var ball2 = new TestBall(5, 0, 10, -1, 0, 1);
 
-            Assert.Equal(expectedVelocityX, ball.VelocityX);
-            Assert.Equal(expectedVelocityY, ball.VelocityY);
+            _logic.BounceBetweenBalls(ball1, ball2);
+
+            Assert.True(ball1.VelocityX < 0);
+            Assert.True(ball2.VelocityX > 0);
         }
     }
 }

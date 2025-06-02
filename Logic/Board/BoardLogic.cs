@@ -28,7 +28,7 @@ namespace Logic
             }
         }
 
-        public BoardLogic(double width, double height, BallLogic ballLogic)
+        public BoardLogic(double width, double height, IBallLogic ballLogic)
         {
             Width = width;
             Height = height;

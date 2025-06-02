@@ -13,7 +13,6 @@ namespace Logic
         void AddBall(double x, double y, double radius, double velocityX, double velocityY, double mass);
         void RemoveBall();
         public void ClearBalls();
-        //void MoveTheBalls(double timeToMove);
         List<IBall> GetBalls();
         Task<List<IBall>> GetBallsAsync();
 
