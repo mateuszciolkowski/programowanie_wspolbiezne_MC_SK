@@ -1,0 +1,7 @@
+2025-06-11 17:27:38 - Kolizja kula–kula: Ball1 (X=510,33, Y=533,29, Vx=62,31, Vy=190,20) vs Ball2 (X=480,54, Y=470,69, Vx=69,47, Vy=6,29)
+2025-06-11 17:27:38 - Kolizja kula–kula: Ball1 (X=510,33, Y=533,29, Vx=-5,63, Vy=47,41) vs Ball2 (X=480,54, Y=470,69, Vx=141,59, Vy=157,87)
+2025-06-11 17:27:38 - Kolizja kula–kula: Ball1 (X=510,36, Y=533,41, Vx=62,09, Vy=190,19) vs Ball2 (X=480,65, Y=470,77, Vx=69,70, Vy=6,30)
+2025-06-11 17:27:38 - Kolizja kula–ściana dolna: Ball (X=520,48, Y=564,41, Vx=62,09, Vy=-190,19)
+2025-06-11 17:27:38 - Kolizja kula–kula: Ball1 (X=529,69, Y=536,32, Vx=132,57, Vy=-26,79) vs Ball2 (X=502,23, Y=472,67, Vx=-5,13, Vy=-167,16)
+2025-06-11 17:27:38 - Kolizja kula–ściana dolna: Ball (X=271,60, Y=574,06, Vx=157,50, Vy=-153,94)
+2025-06-11 17:27:39 - Kolizja kula–kula: Ball1 (X=456,82, Y=312,02, Vx=-37,01, Vy=-71,01) vs Ball2 (X=499,51, Y=382,16, Vx=217,37, Vy=198,38)

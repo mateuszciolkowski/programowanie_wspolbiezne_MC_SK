@@ -1,87 +1,65 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Data
 {
     public static class CollisionLogger
     {
-        private static readonly string logFilePath = Path.Combine(GetProjectDataPath(), "collision_log.txt");
-
-        private static readonly ConcurrentQueue<string> logQueue = new ConcurrentQueue<string>();
-        private static readonly AutoResetEvent logEvent = new AutoResetEvent(false);
-
-        private static bool isRunning = true;
+        private static readonly string logFilePath;
+        private static readonly object fileLock = new object();
         private static StreamWriter? streamWriter;
 
         static CollisionLogger()
         {
-            streamWriter = new StreamWriter(logFilePath, append: true)
-            {
-                AutoFlush = false 
-            };
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            string fileName = $"collision_log_{timestamp}.txt";
+            logFilePath = Path.Combine(GetProjectDataPath(), fileName);
 
-            Task.Run(() => ProcessLogQueue());
+            streamWriter = new StreamWriter(logFilePath, append: false)
+            {
+                AutoFlush = true
+            };
         }
 
         public static void Log(string message)
         {
             string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
-            logQueue.Enqueue(logEntry);
-            logEvent.Set();
-        }
-
-        private static void ProcessLogQueue()
-        {
-            var buffer = new List<string>();
-
-            while (isRunning)
-            {
-                logEvent.WaitOne(1000);
-
-                while (logQueue.TryDequeue(out string? logEntry))
-                {
-                    buffer.Add(logEntry);
-
-                    if (buffer.Count >= 100)
-                    {
-                        FlushBuffer(buffer);
-                    }
-                }
-
-                if (buffer.Count > 0)
-                {
-                    FlushBuffer(buffer);
-                }
-            }
-
-            if (buffer.Count > 0)
-            {
-                FlushBuffer(buffer);
-            }
-
-            streamWriter?.Flush();
-            streamWriter?.Close();
-            streamWriter = null;
-        }
-
-        private static void FlushBuffer(List<string> buffer)
-        {
-            foreach (var logEntry in buffer)
+            lock (fileLock)
             {
                 streamWriter?.WriteLine(logEntry);
             }
-            streamWriter?.Flush();
-            buffer.Clear();
         }
 
-        public static void Stop()
+        public static void LogCollision(double X, double Y,double Radius,double VelocityX,
+                                        double VelocityY, double width, double height)
         {
-            isRunning = false;
-            logEvent.Set();
+            double radius = Radius / 2;
+            string wall;
+
+            if (X - radius <= 0)
+                wall = "ściana lewa";
+            else if (X + radius >= width)
+                wall = "ściana prawa";
+            else if (Y - radius <= 0)
+                wall = "ściana górna";
+            else if (Y + radius >= height)
+                wall = "ściana dolna";
+            else
+                wall = "nieznana";
+
+            string message = $"Kolizja kula–{wall}: Ball (X={X:F2}, Y={Y:F2}, Vx={VelocityX:F2}, Vy={VelocityY:F2})";
+            Log(message);
+        }
+
+
+        public static void LogCollision(double X1,double Y1, double VelocityX1, double VelocityY1,
+                                         double X2, double Y2, double VelocityX2, double VelocityY2)
+        {
+            string message = $"Kolizja kula–kula: " +
+                             $"Ball1 (X={X1:F2}, Y={Y1:F2}, Vx={VelocityX1:F2}, Vy={VelocityY1:F2}) vs " +
+                             $"Ball2 (X={X2:F2}, Y={Y2:F2}, Vx={VelocityX2:F2}, Vy={VelocityY2:F2})";
+            Log(message);
         }
 
         private static string GetProjectDataPath()
@@ -96,6 +74,16 @@ namespace Data
             }
 
             return dataPath;
+        }
+
+        public static void Stop()
+        {
+            lock (fileLock)
+            {
+                streamWriter?.Flush();
+                streamWriter?.Close();
+                streamWriter = null;
+            }
         }
     }
 }

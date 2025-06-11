@@ -1,0 +1,3 @@
+2025-06-11 17:28:05 - Kolizja kula–ściana dolna: Ball (X=365,59, Y=568,24, Vx=191,65, Vy=-86,02)
+2025-06-11 17:28:08 - Kolizja kula–ściana prawa: Ball (X=768,24, Y=387,51, Vx=-191,65, Vy=-86,02)
+2025-06-11 17:28:08 - Kolizja kula–ściana dolna: Ball (X=629,31, Y=565,52, Vx=124,15, Vy=-61,48)

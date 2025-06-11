@@ -133,7 +133,11 @@ namespace Logic
                 {
                     for (int j = i + 1; j < count; j++)
                     {
-                        _ballLogic.BounceBetweenBalls(snapshot[i], snapshot[j]);
+                        if (i!=j)
+                        {
+
+                            _ballLogic.BounceBetweenBalls(snapshot[i], snapshot[j]);
+                        }
                     }
                 }
             }

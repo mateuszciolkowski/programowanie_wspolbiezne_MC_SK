@@ -17,15 +17,30 @@
             double radius = ball.Radius / 2;
             double newVx = ball.VelocityX;
             double newVy = ball.VelocityY;
-
+            bool collided = false;
             if ((ball.X - radius <= 0 && ball.VelocityX < 0) || (ball.X + radius >= width && ball.VelocityX > 0))
-                newVx = -ball.VelocityX;
-
+            { newVx = -ball.VelocityX;
+                collided = true;
+               }
             if ((ball.Y - radius <= 0 && ball.VelocityY < 0) || (ball.Y + radius >= height && ball.VelocityY > 0))
+            {
                 newVy = -ball.VelocityY;
+                collided = true;
 
+
+            }
             if (newVx != ball.VelocityX || newVy != ball.VelocityY)
+            {
                 ball.SetVelocity(newVx, newVy);
+                collided = true;
+            }
+            if (collided)
+            {
+                ball.SetVelocity(newVx, newVy);
+                Data.CollisionLogger.LogCollision(ball.X,ball.Y,ball.Radius,ball.VelocityX,ball.VelocityY, width, height);
+                collided=false;
+            }
+
         }
 
         public void BounceBetweenBalls(IBall ball1, IBall ball2)
@@ -73,8 +88,7 @@
                 double newVy2 = v2tY + newV2n * ny;
                 ball2.SetVelocity(newVx2, newVy2);
 
-                Data.CollisionLogger.Log($"Kolizja kul: Ball1 (X={ball1.X:F2}, Y={ball1.Y:F2}, Vx={ball1.VelocityX:F2}, Vy={ball1.VelocityY:F2}), " +
-                               $"Ball2 (X={ball2.X:F2}, Y={ball2.Y:F2}, Vx={ball2.VelocityX:F2}, Vy={ball2.VelocityY:F2})");
+                Data.CollisionLogger.LogCollision(ball1.X, ball1.Y, ball1.VelocityX, ball1.VelocityY, ball2.X, ball2.Y, ball2.VelocityX, ball2.VelocityY);
 
             }
         }
